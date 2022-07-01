@@ -45,7 +45,6 @@ export class DialogPatientCareComponent implements OnInit {
     private dialogRef: MatDialogRef<DialogPatientCareComponent>) { }  
 
   ngOnInit(): void {
-    
     this.getPatientsList();
     this.getVaccinesList();
 
@@ -100,24 +99,29 @@ export class DialogPatientCareComponent implements OnInit {
             const name = this.patientCareDialogForm.value.patient?.name;
             if (localStorage.getItem('getPatientCares')?.search(name)) {
               _patientCares = JSON.parse(localStorage.getItem('getPatientCares') || '{}');
-              _patientCare = _patientCares.find(pc => pc.patient.id === this.patientCareDialogForm.value.patient.id);
+              if (_patientCares) {
+                _patientCare = _patientCares.find(pc => pc.patient?.id === this.patientCareDialogForm?.value.patient?.id);
+              }
+              
               this.patientCareService.getLastPatientCareByIdPatient(_patientCare?.patient.id || 0)
                 .subscribe(pc => {
                   this.doseDate = this.patientCare?.doseDate;
-                  if (pc.completeDose) {
-                    if (pc?.vaccine.name == 'Sputnik') {
-                      this.patientCareDialogForm.controls['vaccine'].setValue('AstraZeneca');
-                    } else if (pc?.vaccine.name == 'AstraZeneca') {
-                      this.patientCareDialogForm.controls['vaccine'].setValue('Moderna');
-                    } else if (pc?.vaccine.name == 'Sinopharm') {
-                      this.patientCareDialogForm.controls['vaccine'].setValue('Pfizer');
-                    } 
-                    this.patientCareDialogForm.controls['dose'].setValue(1);
-                  } else {
-                    this.patientCareDialogForm.controls['vaccine'].setValue(pc?.vaccine.name);
-                    this.patientCareDialogForm.controls['dose'].setValue((pc?.dose ?? 0) + 1);
+                  if (pc) {
+                    if (pc.completeDose) {
+                      if (pc?.vaccine.name == 'Sputnik') {
+                        this.patientCareDialogForm.controls['vaccine'].setValue('AstraZeneca');
+                      } else if (pc?.vaccine.name == 'AstraZeneca') {
+                        this.patientCareDialogForm.controls['vaccine'].setValue('Moderna');
+                      } else if (pc?.vaccine.name == 'Sinopharm') {
+                        this.patientCareDialogForm.controls['vaccine'].setValue('Pfizer');
+                      } 
+                      this.patientCareDialogForm.controls['dose'].setValue(1);
+                    } else {
+                      this.patientCareDialogForm.controls['vaccine'].setValue(pc?.vaccine.name);
+                      this.patientCareDialogForm.controls['dose'].setValue((pc?.dose ?? 0) + 1);
+                    }                  
+                    this.patientCare = pc
                   }                  
-                  this.patientCare = pc
           });
         }
       }
@@ -128,7 +132,6 @@ export class DialogPatientCareComponent implements OnInit {
     const doseDateFormatter = new Date(this.patientCareDialogForm.value.doseDate);
     let _doseDate = new Date();
     let _lastDoseDate = new Date();
-    let _d: string;
     const combinedForms: any = {
       idPatient: this.patientCareDialogForm.value.patient.id,
       idVaccine: this.patientCareDialogForm.value.vaccine.id,
@@ -145,10 +148,11 @@ export class DialogPatientCareComponent implements OnInit {
           }
           _doseDate.setMonth(_lastDoseDate.getMonth());
           _doseDate.setFullYear(_lastDoseDate.getFullYear());
+
           _doseDate.setDate(_lastDoseDate.getDate()+this.patientCareDialogForm.value.vaccine.days);
           doseDateFormatter.setDate(doseDateFormatter.getDate()+this.patientCareDialogForm.value.vaccine.days);
+
           if(doseDateFormatter.valueOf() >= _doseDate.valueOf() || this.patientCareDialogForm.value.dose < this.patientCareDialogForm.value.vaccine.completeDose) {
-                        
             if(this.patientCareDialogForm.value.dose < this.patientCareDialogForm.value.vaccine.completeDose && !this.patientCare?.completeDose) {
               this._snackBar.open("Paciente añadido con exito, debe retornar posterior a la fecha: ", 
                 doseDateFormatter.toISOString().split("T")[0],
@@ -175,13 +179,23 @@ export class DialogPatientCareComponent implements OnInit {
               });
           }
         },
-        error: (error) => {
-          this._snackBar.open(error,"",
-          { duration:3000, horizontalPosition:'center', verticalPosition:'top'});
+        error: (err) => {
+          this.notificationMessage(err);
         }
       }
     );
   }
+  /**
+   * Method for throw a notification
+   * @param message string
+   */
+   notificationMessage(message: string) {
+    this._snackBar.open(message,void 0, { 
+        duration:3000, 
+        horizontalPosition:'center', 
+        verticalPosition:'top'
+      });
+    }
 
   openPatientCareExitNotification() {
     this._snackBar.open("Registrado", "",{duration:1000});

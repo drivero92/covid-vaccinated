@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,HttpErrorResponse,HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 
 import { Vaccine } from '../models/vaccine';
 
@@ -15,7 +15,8 @@ export class VaccineService {
 
   getVaccines(): Observable<Vaccine[]> {
     const url = `${this.urlVaccines}/list`;
-    return this.http.get<Vaccine[]>(url);
+    return this.http.get<Vaccine[]>(url)
+      .pipe(catchError(this.handleError));
   }
 
   getVaccine(id: number): Observable<Vaccine> {
@@ -25,7 +26,8 @@ export class VaccineService {
 
   addVaccine(Vaccine: Vaccine): Observable<Vaccine> {
     const url = `${this.urlVaccines}/save`;
-      return this.http.post<Vaccine>(url, Vaccine);
+      return this.http.post<Vaccine>(url, Vaccine)
+        .pipe(catchError(this.handleError));
   }
 
   updateVaccine(Vaccine: Vaccine): Observable<Vaccine> {
@@ -33,9 +35,10 @@ export class VaccineService {
       return this.http.put<Vaccine>(url, Vaccine);
   }
 
-  deleteVaccine(id: number): Observable<Vaccine> {
+  deleteVaccine(id: number): Observable<any> {
     const url = `${this.urlVaccines}/delete/${id}`;
-    return this.http.delete<Vaccine>(url);
+    return this.http.delete<any>(url)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -43,6 +46,7 @@ export class VaccineService {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error);
+      errorMessage = 'A client-side or network error occurred';
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.

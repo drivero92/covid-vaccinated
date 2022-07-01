@@ -15,6 +15,7 @@ export class PatientCareService {
   getPatientCares(): Observable<PatientCare[]> {
     const url = `${this.urlPatientCare}/list`;
     return this.http.get<PatientCare[]>(url)
+      .pipe(catchError(this.handleError));
   }
 
   getPatientCareListByIdPatient(id: number): Observable<PatientCare[]> {
@@ -49,9 +50,9 @@ export class PatientCareService {
       .pipe(catchError(this.handleError));
   }
 
-  deletePatientCare(id: number): Observable<PatientCare> {
+  deletePatientCare(id: number): Observable<any> {
     const url = `${this.urlPatientCare}/delete/${id}`;
-    return this.http.delete<PatientCare>(url);
+    return this.http.delete<any>(url);
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -59,16 +60,17 @@ export class PatientCareService {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error);
+      errorMessage ='A client-side or network error occurred.';
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong.
-      // console.error(
-      //   `Backend returned code ${error.status}, body wasSA: `, error.error);
-        // errorMessage = `Backend returned code ${error.status}, body was: ${JSON.stringify(error.error)}` ;
+      console.error(
+        `Backend returned code ${error.status}, body was: `, error.error);
+        // errorMessage += `Backend returned code ${error.status}, body was: ${JSON.stringify(error.error)}` ;
         errorMessage = `${JSON.stringify(error.error.message)}`;
     }
     // Return an observable with a user-facing error message.
-    //errorMessage+='Something bad happened; please try again later.';
+    // errorMessage+='Something bad happened; please try again later.';
     return throwError(() => new Error(errorMessage));
   }
 }

@@ -19,15 +19,15 @@ import { DialogVaccineComponent } from '../dialogs/dialog-vaccine/dialog-vaccine
 })
 export class VaccinesComponent implements OnInit {
 
+  vaccineTitle: string = "Vacunas";
   displayedColumns: string[] = ["Nombre", "Días de descanso", "Cantidad", "Dosis completa", "Acciones"];
   dataSource!: MatTableDataSource<any>;
+  dataErrorMessage: string = '';
+  vaccines: Vaccine [] = [];
+  vaccineForm: FormGroup;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  form: FormGroup;
-
-  vaccines: Vaccine [] = [];
 
   constructor(
     private vaccineService: VaccineService, 
@@ -35,11 +35,12 @@ export class VaccinesComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private vaccineDialog: MatDialog) 
   {
-    this.form = this.formBuilder.group(
+    this.vaccineForm = this.formBuilder.group(
       {
         vaccineName: ['', Validators.required],
         vaccineDays: ['', Validators.required],
         vaccineQuantity: ['', Validators.required],
+        vaccineCompleteDose: ['', Validators.required],
       }
     )
   }
@@ -53,46 +54,35 @@ export class VaccinesComponent implements OnInit {
     .subscribe(
       {
         next:(res)=>{
-          this.dataSource = new MatTableDataSource(res);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          localStorage.setItem('getVaccines', JSON.stringify(this.dataSource.data));
+          if (res) {
+            this.vaccines = res;
+            this.dataSource = new MatTableDataSource(res);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            localStorage.setItem('getVaccines', JSON.stringify(this.dataSource.data));
+          }
         },
-        error:(err)=>{
-          //alert("Error de carga");
-          this._snackBar.open(
-            "Error de carga","Salir",
-            {horizontalPosition:'center',verticalPosition:'top'});
+        error: (err) => {
+          this.dataErrorMessage = err;
         }
       }
     );
   }
-
-  detailsPeopleVaccinated() {
-
-  }
-
   removeVaccine(id: number) {
-    const _resp = confirm('Desea eliminar?');
-    if (_resp) {
+    const _res = confirm('Desea eliminar?');
+    if (_res) {
       this.vaccineService.deleteVaccine(id).subscribe({
-        next: () => {
-          //alert("Paciente eliminado");
-          this._snackBar.open(
-            "Vacuna eliminada","",
-            {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
+        next: (res) => {
+          this.notificationMessage(res);
+          this.vaccines.pop();
           this.getVaccines();
-        }, error: (err) => {
-          //alert("Error al eliminar");
-          this._snackBar.open(
-            "Error al eliminar","",
-            {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
-
+        }, 
+        error: (err) => {
+          this.notificationMessage(err);
         },
       });
     }
   }
-
   openVaccineDialog() {
     const dialogRef = this.vaccineDialog
       .open(DialogVaccineComponent, {
@@ -104,7 +94,6 @@ export class VaccinesComponent implements OnInit {
         }
       });
   }
-
   editVaccine(element: any) {
     const dialogRef = this.vaccineDialog
       .open(DialogVaccineComponent, {
@@ -117,7 +106,6 @@ export class VaccinesComponent implements OnInit {
         }
       });
   }
-
   viewPatientsVaccinated(element: any) {
     const dialogRef = this.vaccineDialog
       .open(DialogPatientsVaccinatedHistoryComponent, {
@@ -126,15 +114,29 @@ export class VaccinesComponent implements OnInit {
         data: element,
       });
   }
-
-  /* Filter the table with any value entered */
+  /**
+   * Filter the table with any value entered
+   * @param event Event
+   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    if (this.dataSource) {
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
+    }    
+  }
+  /**
+   * Method for throw a notification
+   * @param message string
+   */
+   notificationMessage(message: string) {
+    this._snackBar.open(message,undefined, {
+        duration:3000,
+        horizontalPosition:'center',
+        verticalPosition:'top'
+      });
   }
 
 }

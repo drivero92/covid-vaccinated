@@ -1,5 +1,5 @@
 <mat-card class="example-card">
-    <mat-card-title>Pacientes vacunados</mat-card-title>
+    <mat-card-title>{{patientCaretitle}}</mat-card-title>
 
     <!-- Filter each word of each column-->
     <!-- <div>
@@ -38,10 +38,16 @@
             </div>
         </form>
     </div>
-
-
+    <div *ngIf="dataErrorMessage">
+        <h4 class="text-danger">{{dataErrorMessage}}</h4>
+    </div>
+    <div *ngIf="patientCares.length==0 && !dataErrorMessage">
+        <h4 class="text-danger">
+            No existe registro de {{patientCaretitle | lowercase}}
+        </h4>
+    </div>
     <!-- Container of patient care table -->
-    <div class="mat-elevation-z8" style="width: 1000px;margin: auto;">
+    <div class="mat-elevation-z8" style="width: 1000px;margin: auto;" >
         <button mat-raised-button color="primary" style="float: right;" (click)="openPatientCareDialog()">Agregar paciente</button>
         <!-- <button mat-button color="primary" 
                 [disabled]="patientCareForm.invalid"
@@ -64,9 +70,8 @@
             </div>
         </form> -->
 
-        
-
-        <table mat-table [dataSource]="dataSource" style="width: 1000px; height: 500px; margin: auto;">
+        <table mat-table [dataSource]="dataSource" style="width: 1000px; height: 200px; margin: auto;">
+            
             <!--For visualize all the columns it must be implement 
                 matColumnDef for each columns, contrary case it not visualize-->
             <!-- Name Column -->
@@ -113,7 +118,8 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             
         </table>
-        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+        <mat-paginator  [pageSizeOptions]="[5, 10, 25, 100]" 
+                        aria-label="Select page of users"></mat-paginator>
     </div>
     
 </mat-card>

@@ -16,7 +16,7 @@ export class DialogVaccineComponent implements OnInit {
   vaccineForm: FormGroup = this.formBuilder.group({
     name: ['', Validators.required],
     quantity: ['', Validators.required],
-    days: ['', Validators.required],
+    restDays: ['', Validators.required],
     completeDose: ['', Validators.required],
   });
 
@@ -33,26 +33,24 @@ export class DialogVaccineComponent implements OnInit {
       this.actionBtn = "Actualizar";
       this.vaccineForm.controls['name'].setValue(this.editData.name);
       this.vaccineForm.controls['quantity'].setValue(this.editData.quantity);
-      this.vaccineForm.controls['days'].setValue(this.editData.days);
+      this.vaccineForm.controls['restDays'].setValue(this.editData.restDays);
       this.vaccineForm.controls['completeDose'].setValue(this.editData.completeDose);
     }
   }
 
   saveVaccineModal() {
     const _vaccine = this.vaccineForm.value;
+    console.log("v ",_vaccine);
     if (!this.editData) {
       this.vaccineService.addVaccine(_vaccine).subscribe(
         {
-          next: (value) => {
-            //alert("Vacuna añadida");
-            this._snackBar.open(
-              "Vacuna añadida","",
-              {duration: 3000, horizontalPosition:'center', verticalPosition:'top'});
+          next: (res: any) => {
+            this.notificationMessage(res.message as string);
             this.vaccineForm.reset();
             this.dialogRef.close('save');
-          }, error: () => {
-            //alert("Error al guardar");
-            this._snackBar.open("Error al guardar","",{duration: 3000});
+          }, 
+          error: (err) => {
+            this.notificationMessage(err);
           },
         }
       );
@@ -77,8 +75,18 @@ export class DialogVaccineComponent implements OnInit {
         });
     }  
    }
-
-  openVaccineNotification() {
+   /**
+   * Method for throw a notification
+   * @param message string
+   */
+    notificationMessage(message: string) {
+      this._snackBar.open(message,undefined, {
+          duration:3000,
+          horizontalPosition:'center',
+          verticalPosition:'top'
+        });
+    }
+    openVaccineNotification() {
     this._snackBar.open("Registrado", "salir");
   }
 

@@ -37,6 +37,10 @@ h1 {
     color: #aaa;
     cursor: auto;
   }
+
+  .mat-simple-snackbar {
+    justify-content: center !important;
+  }
   
   /* everywhere else */
   * {

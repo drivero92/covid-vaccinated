@@ -20,11 +20,13 @@ import { DialogVaccinationHistoryComponent } from '../dialogs/dialog-vaccination
 })
 export class PatientsComponent implements OnInit {
 
+  patientsTitle: string = "Pacientes";
   displayedColumns: string[] = ["Nombre", "Apellido", "CI", "Edad", "Acciones"];
   dataSource!: MatTableDataSource<any>;
   patient: Patient | undefined;
   patients: Patient [] = [];
   modeQuery: number;
+  dataErrorMessage: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -56,23 +58,20 @@ export class PatientsComponent implements OnInit {
   with the matColumnDef="<the same name>" */
   getPatients(): void {
     this.patientService.getPatients()
-      .subscribe(
-        {
-          next:(res)=>{
-            this.patients = res;
-            this.dataSource = new MatTableDataSource(res);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            localStorage.setItem('getPatients', JSON.stringify(this.dataSource.data));
-          },
-          error:(err)=>{
-            //alert("Error de carga");
-            this._snackBar.open(
-              "Error de carga","Salir",
-              {horizontalPosition:'center',verticalPosition:'top'});
+      .subscribe({
+          next: (res) => {
+            if (res) {
+              this.patients = res;
+              this.dataSource = new MatTableDataSource(res);
+              this.dataSource.paginator = this.paginator;
+              this.dataSource.sort = this.sort;
+              localStorage.setItem('getPatients', JSON.stringify(this.dataSource.data));
+            }
+          }, 
+          error: (err) => {
+            this.dataErrorMessage = err;
           }
-        }
-      );
+        });
   }
 
   postPatient(): void {    
@@ -103,31 +102,39 @@ export class PatientsComponent implements OnInit {
 
   removePatient(id: number) {
     //revisar si esta intentando eliminar un paciente que ya se vacuno
-    const _resp = confirm('Desea eliminar?');
-    if (_resp) {
+    const _res = confirm('Desea eliminar?');
+    if (_res) {
       this.patientService.deletePatient(id).subscribe({
           next: (res) => {
-            //alert("Paciente eliminado");
-            this._snackBar.open(
-              "Paciente eliminado","",
-              {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
+            this.notificationMessage(res.message as string);
+            this.patients.pop();
             this.getPatients();
           },
-          error:() => {
-            //alert("Error al eliminar");
-            this._snackBar.open(
-              "Error al eliminar","",
-              {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
+          error: (err) => {
+            this.notificationMessage(err);
           }
         });
     }
   }
+  /**
+   * Method for throw a notification
+   * @param message string
+   */
+   notificationMessage(message: string) {
+    this._snackBar.open(
+      message,void 0, { 
+        duration:3000, 
+        horizontalPosition:'center', 
+        verticalPosition:'top'
+      });
+  }
 
   openPatientDialog() {
-    const dialogRef = this.dialog.open(DialogPatientComponent, 
-      {
+    const dialogRef = this.dialog
+      .open(DialogPatientComponent, {
         width:'250px',
-      }).afterClosed().subscribe(val => {
+      })
+      .afterClosed().subscribe(val => {
         if(val == 'save') {
           this.getPatients();
         }
@@ -135,11 +142,12 @@ export class PatientsComponent implements OnInit {
   }
 
   editPatient(element: any) {
-    const dialogRef = this.dialog.open(DialogPatientComponent, 
-      {
+    const dialogRef = this.dialog
+      .open(DialogPatientComponent, {
         width:'250px',
         data: element,
-      }).afterClosed().subscribe(val => {
+      })
+      .afterClosed().subscribe(val => {
         if(val == 'update') {
           this.getPatients();
         }
@@ -147,24 +155,22 @@ export class PatientsComponent implements OnInit {
   }
 
   viewPatientVaccinated(element: any) {
-    const dialogRef = this.dialog.open(DialogVaccinationHistoryComponent, 
-      {
+    const dialogRef = this.dialog
+      .open(DialogVaccinationHistoryComponent, {
         width:'450px',
         data: element,
-      }).afterClosed().subscribe(val => {
-        if(val == 'update') {
-          this.getPatients();
-        }
       });
   }
 
   /* Filter the table with any value entered */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if(this.dataSource) {
+      this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
     }
   }
 

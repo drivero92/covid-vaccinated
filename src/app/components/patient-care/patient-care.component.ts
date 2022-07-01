@@ -30,6 +30,7 @@ export class PatientCareComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  patientCaretitle: string = "Pacientes vacunados";
   patientCares: PatientCare [] = [];
   patientList: Patient [] = [];
   patient: Patient | undefined;
@@ -38,6 +39,7 @@ export class PatientCareComponent implements OnInit {
   dose:number = 0;
   nu:number = 0;
   noneFilerVaccine: any;
+  dataErrorMessage: string = '';
 
   patientCareForm: FormGroup;
   filterForm: FormGroup;
@@ -86,22 +88,20 @@ export class PatientCareComponent implements OnInit {
    */
   getPatientCares() {
     this.patientCareService.getPatientCares()
-      .subscribe(
-        {
+      .subscribe({
           next: (res) => {
-            this.dataSource = new MatTableDataSource(res);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            localStorage.setItem('getPatientCares',JSON.stringify(this.dataSource.data));
+            if (res) {
+              this.patientCares = res;
+              this.dataSource = new MatTableDataSource(res);
+              this.dataSource.paginator = this.paginator;
+              this.dataSource.sort = this.sort;
+              localStorage.setItem('getPatientCares',JSON.stringify(this.dataSource.data));
+            }                 
           },
-          error:(err)=>{
-            //alert("Error de carga");
-            this._snackBar.open(
-              "Error de carga","Salir",
-              {horizontalPosition:'center',verticalPosition:'top'});
+          error: (err)=>{
+            this.dataErrorMessage = err;
           }
-        }
-      );
+        });
   }
   /**
    * Method for get the patient care detail of a patient vaccinated
@@ -137,36 +137,45 @@ export class PatientCareComponent implements OnInit {
     if(localStorage.getItem('getPatientCares') && '{}') {
       this.patientCares = JSON.parse(localStorage.getItem('getPatientCares') || '{}');
     }
-    
-    let _vaccineList = this.patientCares
+    if (this.patientCares) {
+      let _vaccineList = this.patientCares
         .map(_patientCare => _patientCare.vaccine)
-    const ids = _vaccineList.map(o => o.id)
-    this.vaccines = _vaccineList.filter(({id}, index) => !ids.includes(id, index + 1))
+      const ids = _vaccineList.map(o => o.id)
+      this.vaccines = _vaccineList.filter(({id}, index) => !ids.includes(id, index + 1))
+    }    
   }
   /**
    * Filter the vaccine from the patient care table
    */
   filterVaccine() {
     this.route.queryParamMap.subscribe(params =>{
-      this.vaccineName = params.get('vaccine') || 'name'
-      this.dose = Number(params.get('dose')) || 0
+      this.vaccineName = params.get('vaccine') || 'name';
+      this.dose = Number(params.get('dose')) || 0;
     });
+
     this.filterForm.valueChanges.subscribe(() => {
-      this.router.navigate(['/'], {queryParams: {values: JSON.stringify(this.filterForm.value.vaccine?.name)}})
-      if(this.filterForm.value.vaccine?.id) {
+      this.router.navigate(['/'], {queryParams: {values: JSON.stringify(this.filterForm.value.vaccine?.name)}});
+
+      if (this.filterForm.value.vaccine?.id) {
         this.patientCareService.getPatientCareListByIdVaccine(this.filterForm.value.vaccine?.id).subscribe(
           res => {
-            this.dataSource = new MatTableDataSource(res);            
+            if (res) {
+              this.dataSource = new MatTableDataSource(res);
+            }
           });
       } else if(this.filterForm.value.dose?.dose) {
         this.patientCareService.getPatientCareListByDose(this.filterForm.value.dose?.dose).subscribe(
-          resp => {
-            this.dataSource = new MatTableDataSource(resp);            
+          res => {
+            if (res) {
+              this.dataSource = new MatTableDataSource(res);
+            }            
           });
       } else {
           this.patientCareService.getPatientCares().subscribe(
-          resp => {
-            this.dataSource = new MatTableDataSource(resp);              
+          res => {
+            if (res) {
+              this.dataSource = new MatTableDataSource(res);
+            }            
           });
       }
       
@@ -177,31 +186,39 @@ export class PatientCareComponent implements OnInit {
    * @param id number
    */
   removePatientCare(id: number) {
-    const _resp = confirm('Desea eliminar?');
-    if (_resp) {
+    const _res = confirm('Desea eliminar?');
+    if (_res) {
       this.patientCareService.deletePatientCare(id).subscribe({
           next: (res) => {
-            //alert("Paciente vacunado eliminado");
-            this._snackBar.open(
-              "Paciente eliminado","",
-              {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
+            this.notificationMessage(res);
+            this.patientCares.pop();
             this.getPatientCares();
           },
-          error:() => {
-            //alert("Error al eliminar");
-            this._snackBar.open(
-              "Error al eliminar","",
-              {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
+          error: (err) => {
+            this.notificationMessage(err);
           }
         });
     }
   }
+  /**
+   * Method for throw a notification
+   * @param message string
+   */
+  notificationMessage(message: string) {
+    this._snackBar.open(
+      message,void 0, { 
+        duration:3000, 
+        horizontalPosition:'center', 
+        verticalPosition:'top'
+      });
+  }
 
   openPatientCareDialog() {
-    const dialogRef = this.dialog.open(DialogPatientCareComponent, 
-      {
+    const dialogRef = this.dialog
+      .open(DialogPatientCareComponent, {
         width:'250px',
-      }).afterClosed().subscribe(val => {
+      })
+      .afterClosed().subscribe(val => {
         if(val == 'save') {
           this.getPatientCares();
         }

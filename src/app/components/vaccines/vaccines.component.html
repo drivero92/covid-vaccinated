@@ -1,5 +1,5 @@
 <mat-card class="example-card">
-    <mat-card-title>Vacunas</mat-card-title>
+    <mat-card-title>{{vaccineTitle}}</mat-card-title>
 
     <!-- Filter each word of each column-->
     <div>
@@ -7,6 +7,15 @@
             <mat-label>Buscar las vacunas</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Introducir busqueda" #input>
         </mat-form-field>
+    </div>
+
+    <div *ngIf="dataErrorMessage">
+        <h4 class="text-danger">{{dataErrorMessage}}</h4>
+    </div>
+    <div *ngIf="vaccines.length == 0 && !dataErrorMessage">
+        <h4 class="text-danger">
+            No existe registro en {{vaccineTitle | lowercase}}
+        </h4>
     </div>
 
     <!-- Container of vaccines table -->

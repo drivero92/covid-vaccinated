@@ -60,19 +60,13 @@ export class DialogPatientComponent implements OnInit {
     if (!this.editData) {
       this.patientService.addPatient(_patient).subscribe(
         {
-          next: (res) => {
-            //alert("Paciente añadido con exito");
-            this._snackBar.open(
-              "Paciente añadido con exito", "",
-              {duration: 3000,horizontalPosition:'center',verticalPosition:'top'});
+          next: (res: any) => {
+            this.notificationMessage(res.message as string);
             this.patientForm.reset();
             this.dialogRef.close('save');
           },
-          error: () => {
-            //alert("Error al guardar");
-            this._snackBar.open(
-              "Error al guardar","",
-              {duration:3000});
+          error: (err) => {
+            this.notificationMessage(err);
           }
         }
       );
@@ -81,6 +75,17 @@ export class DialogPatientComponent implements OnInit {
     }
     
   }
+  /**
+   * Method for throw a notification
+   * @param message string
+   */
+   notificationMessage(message: string) {
+    this._snackBar.open(message,void 0, { 
+        duration:3000, 
+        horizontalPosition:'center', 
+        verticalPosition:'top'
+      });
+    }
 
   updatePatient(patient: Patient) {
     patient.id = this.editData.id;

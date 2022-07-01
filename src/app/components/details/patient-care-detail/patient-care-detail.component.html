@@ -1,0 +1,16 @@
+<div *ngIf="patientCares">
+    <h2>Detalles del paciente {{patientCares[0]?.patient?.name | uppercase}}</h2>
+    <table id="patient-cares-details">
+        <tr>
+            <th *ngFor="let header of patientCareHeaderDetail">
+                {{header}}
+            </th>
+        </tr>
+        <tr *ngFor="let patientCare of patientCares">
+            <td>{{patientCare.vaccine.name}}</td>
+            <td>{{patientCare.dose}}</td>
+            <td>{{patientCare.doseDate}}</td>
+        </tr>
+    </table>
+    <button mat-button color="primary" (click)="goBack()">Volver atras</button>    
+</div>

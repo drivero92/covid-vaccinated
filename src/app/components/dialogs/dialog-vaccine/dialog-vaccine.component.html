@@ -1,0 +1,33 @@
+<!-- Form for add vaccine -->
+<div mat-dialog-content>
+    <form [formGroup]="vaccineForm">
+        <div>
+            <mat-form-field appearance="legacy">
+                <input type="text" matInput placeholder="Nombre" formControlName="name">
+              </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="legacy">
+                <input type="text" matInput placeholder="Cantidad" formControlName="quantity">
+              </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="legacy">
+                <input matInput placeholder="Días de descanso" formControlName="days">
+              </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field appearance="legacy">
+                <input matInput placeholder="Dosis completa" formControlName="completeDose">
+              </mat-form-field>
+        </div>
+        <div>
+            <button type="submit" 
+                    [disabled]="vaccineForm.invalid" 
+                    class="btn btn-danger" 
+                    mat-raised-button
+                    color="primary"
+                    (click)="saveVaccineModal()">{{actionBtn}}</button>
+        </div>
+    </form>
+</div>

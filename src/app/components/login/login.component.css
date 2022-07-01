@@ -1,0 +1,14 @@
+.mat-card-login {
+    width: 300px;
+    height: 300px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 50%;
+}
+
+.mat-form-field-input {
+  padding: 18px;
+  font-size: 1.4em;
+  font-weight: normal;
+  vertical-align: middle;
+}

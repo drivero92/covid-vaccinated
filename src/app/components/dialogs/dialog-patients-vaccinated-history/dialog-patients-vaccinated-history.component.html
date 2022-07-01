@@ -1,0 +1,20 @@
+<div *ngIf="patientFlag">
+    <h2>Pacientes vacunados con {{patientCareList[0]?.vaccine?.name | uppercase}}</h2>
+    <mat-card style="background-color: rgb(236, 245, 252);">
+        <table>
+            <tr>
+                <th *ngFor="let header of patientCareHeaderDetail">
+                    {{header}}
+                </th>
+            </tr>
+            <tr *ngFor="let patientCare of patientCareList">
+                <td>{{patientCare.patient.name}}</td>
+                <td>{{patientCare.dose}}</td>
+                <td>{{patientCare.doseDate}}</td>
+            </tr>
+        </table>
+    </mat-card>
+</div>
+<div *ngIf="!patientFlag">
+    <mat-label>No tiene registro</mat-label>
+</div>

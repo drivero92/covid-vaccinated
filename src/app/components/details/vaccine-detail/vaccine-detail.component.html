@@ -1,0 +1,32 @@
+<div *ngIf="vaccine">
+    <h2>Detalles de la vacuna {{vaccine.name | uppercase}}</h2>
+    <div>
+        <label>Nombre: </label>
+        <input type="text" [(ngModel)]="vaccine.name">
+    </div>
+    <div>
+        <label>Cantidad: </label>
+        <input type="number" [(ngModel)]="vaccine.quantity">
+    </div>
+    <div>
+        <label>Días de descanso: </label>
+        <input type="number" [(ngModel)]="vaccine.days">
+    </div>
+    <button mat-raised-button (click)="updateVaccine()">Guardar</button>
+</div>
+<div *ngIf="patientCareList != null && vaccine == null">
+    <h2>Lista de pacientes vacunados con {{patientCareList[0].vaccine?.name | uppercase}}</h2>
+    <table>
+        <tr>
+            <th *ngFor="let header of patientCareHeaderDetail">
+                {{header}}
+            </th>
+        </tr>
+        <tr *ngFor="let patientCare of patientCareList ">
+            <td>{{patientCare.patient.name}}</td>
+            <td>{{patientCare.dose}}</td>
+            <td>{{patientCare.doseDate}}</td>
+        </tr>
+    </table>
+</div>
+<button mat-raised-button (click)="goBack()">Volver atras</button>

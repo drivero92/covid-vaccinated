@@ -15,7 +15,7 @@ export class DialogPatientComponent implements OnInit {
   actionBtn: string = "Guardar";
   textRegEx = /^[a-zA-Z ]+$/;
   numberRegEx = /\-?\d*\.?\d{1,2}/;  
-  patientForm: FormGroup = this.formBuilder.group({
+  patientDialogForm: FormGroup = this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern(this.textRegEx)]],
       lastName: ['', [Validators.required,Validators.pattern(this.textRegEx)]],
       ci: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
@@ -30,13 +30,13 @@ export class DialogPatientComponent implements OnInit {
     private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.patientForm;
+    this.patientDialogForm;
     if (this.editData) {
       this.actionBtn = "Actualizar";
-      this.patientForm.controls['name'].setValue(this.editData.name);
-      this.patientForm.controls['lastName'].setValue(this.editData.lastName);
-      this.patientForm.controls['ci'].setValue(this.editData.ci);
-      this.patientForm.controls['age'].setValue(this.editData.age);
+      this.patientDialogForm.controls['name'].setValue(this.editData.name);
+      this.patientDialogForm.controls['lastName'].setValue(this.editData.lastName);
+      this.patientDialogForm.controls['ci'].setValue(this.editData.ci);
+      this.patientDialogForm.controls['age'].setValue(this.editData.age);
     }
 
     this.dialogRef.disableClose = true;
@@ -50,7 +50,7 @@ export class DialogPatientComponent implements OnInit {
 
   saveModal(){
     let patients: Patient[] =[];
-    let _patient: Patient = this.patientForm.value;
+    let _patient: Patient = this.patientDialogForm.value;
     /* if(localStorage.getItem('patientsLS') != null) {
       patients = JSON.parse(localStorage.getItem('patientsLS') || '{}'); 
     } */
@@ -62,7 +62,7 @@ export class DialogPatientComponent implements OnInit {
         {
           next: (res: any) => {
             this.notificationMessage(res.message as string);
-            this.patientForm.reset();
+            this.patientDialogForm.reset();
             this.dialogRef.close('save');
           },
           error: (err) => {
@@ -94,7 +94,7 @@ export class DialogPatientComponent implements OnInit {
         next: (value) => {
           this._snackBar.open("Se actualizó","",
           {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
-          this.patientForm.reset();
+          this.patientDialogForm.reset();
           this.dialogRef.close('update');
         }, error: (err) => {
           alert("No se pudo actualizar");

@@ -59,7 +59,7 @@ export class VaccineDetailComponent implements OnInit {
    * @param id number
    */
   getPatientCareListByVaccine(id: number) {
-    this.patientCareService.getPatientCareListByIdVaccine(id).subscribe({
+    this.patientCareService.getPatientCareListByVaccineId(id).subscribe({
       next: (value) => {
         this.patientCareList = value;
       }, error: (err) => {

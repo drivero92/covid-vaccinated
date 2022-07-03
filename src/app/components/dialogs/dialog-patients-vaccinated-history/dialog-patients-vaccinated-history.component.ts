@@ -25,7 +25,7 @@ export class DialogPatientsVaccinatedHistoryComponent implements OnInit {
   }
 
   getPatientCareListByVaccine() {
-    this.patientCareService.getPatientCareListByIdVaccine(this.viewData.id).subscribe({
+    this.patientCareService.getPatientCareListByVaccineId(this.viewData.id).subscribe({
       next: (value) => {
         if (value) {
           this.patientFlag = true;

@@ -87,21 +87,22 @@ export class PatientCareComponent implements OnInit {
    * Fetches the list of patient cares vaccinated
    */
   getPatientCares() {
-    this.patientCareService.getPatientCares()
-      .subscribe({
-          next: (res) => {
-            if (res) {
-              this.patientCares = res;
-              this.dataSource = new MatTableDataSource(res);
-              this.dataSource.paginator = this.paginator;
-              this.dataSource.sort = this.sort;
-              localStorage.setItem('getPatientCares',JSON.stringify(this.dataSource.data));
-            }                 
-          },
-          error: (err)=>{
-            this.dataErrorMessage = err;
+    this.patientCareService.getPatientCares().subscribe({
+      next: (res) => {
+          if (res) {
+            this.patientCares = res;
+            this.dataSource = new MatTableDataSource(res);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            localStorage.setItem('getPatientCares',JSON.stringify(this.dataSource.data));
+          } else {
+            this.dataSource = new MatTableDataSource(res);
           }
-        });
+        },
+        error: (err) => {
+          this.dataErrorMessage = err;
+        }
+      });
   }
   /**
    * Method for get the patient care detail of a patient vaccinated
@@ -157,7 +158,7 @@ export class PatientCareComponent implements OnInit {
       this.router.navigate(['/'], {queryParams: {values: JSON.stringify(this.filterForm.value.vaccine?.name)}});
 
       if (this.filterForm.value.vaccine?.id) {
-        this.patientCareService.getPatientCareListByIdVaccine(this.filterForm.value.vaccine?.id).subscribe(
+        this.patientCareService.getPatientCareListByVaccineId(this.filterForm.value.vaccine?.id).subscribe(
           res => {
             if (res) {
               this.dataSource = new MatTableDataSource(res);
@@ -190,7 +191,7 @@ export class PatientCareComponent implements OnInit {
     if (_res) {
       this.patientCareService.deletePatientCare(id).subscribe({
           next: (res) => {
-            this.notificationMessage(res);
+            this.notificationMessage(res.message);
             this.patientCares.pop();
             this.getPatientCares();
           },

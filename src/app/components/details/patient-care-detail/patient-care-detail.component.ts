@@ -25,7 +25,7 @@ export class PatientCareDetailComponent implements OnInit {
 
   getPatient() {
     let id = Number(this.route.snapshot.paramMap.get('id'));
-    this.patientCareService.getPatientCareListByIdPatient(id)
+    this.patientCareService.getPatientCareListByPatientId(id)
         .subscribe(patient => this.patientCares = patient);
   }
 

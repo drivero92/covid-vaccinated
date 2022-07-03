@@ -29,7 +29,7 @@ export class DialogVaccinationHistoryComponent implements OnInit {
   }
 
   getPatientCare() {
-    this.patientCareService.getPatientCareListByIdPatient(this.viewData.id).subscribe(
+    this.patientCareService.getPatientCareListByPatientId(this.viewData.id).subscribe(
       {
         next: (value) => {
           if (value) {

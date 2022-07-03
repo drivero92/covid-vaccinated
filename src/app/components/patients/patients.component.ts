@@ -66,6 +66,8 @@ export class PatientsComponent implements OnInit {
               this.dataSource.paginator = this.paginator;
               this.dataSource.sort = this.sort;
               localStorage.setItem('getPatients', JSON.stringify(this.dataSource.data));
+            } else {
+              this.dataSource = new MatTableDataSource(res);
             }
           }, 
           error: (err) => {

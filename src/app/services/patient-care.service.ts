@@ -18,17 +18,17 @@ export class PatientCareService {
       .pipe(catchError(this.handleError));
   }
 
-  getPatientCareListByIdPatient(id: number): Observable<PatientCare[]> {
+  getPatientCareListByPatientId(id: number): Observable<PatientCare[]> {
     const url = `${this.urlPatientCare}/list_patient_care/${id}`;
     return this.http.get<PatientCare[]>(url)
   }
 
-  getLastPatientCareByIdPatient(id: number): Observable<PatientCare> {
+  getLastPatientCareByPatientId(id: number): Observable<PatientCare> {
     const url = `${this.urlPatientCare}/get/last_patient_care_byPatientId/${id}`;
     return this.http.get<PatientCare>(url)
   }
 
-  getPatientCareListByIdVaccine(id: number): Observable<PatientCare[]> {
+  getPatientCareListByVaccineId(id: number): Observable<PatientCare[]> {
     const url = `${this.urlPatientCare}/list_vaccines_patient_care/${id}`;
     return this.http.get<PatientCare[]>(url)
   }
@@ -52,7 +52,8 @@ export class PatientCareService {
 
   deletePatientCare(id: number): Observable<any> {
     const url = `${this.urlPatientCare}/delete/${id}`;
-    return this.http.delete<any>(url);
+    return this.http.delete<any>(url)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

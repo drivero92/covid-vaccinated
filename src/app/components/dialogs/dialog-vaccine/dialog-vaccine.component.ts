@@ -13,7 +13,7 @@ import { VaccineService } from 'src/app/services/vaccine.service';
 export class DialogVaccineComponent implements OnInit {
 
   actionBtn: string = "Guardar";
-  vaccineForm: FormGroup = this.formBuilder.group({
+  vaccineDialogForm: FormGroup = this.formBuilder.group({
     name: ['', Validators.required],
     quantity: ['', Validators.required],
     restDays: ['', Validators.required],
@@ -31,49 +31,45 @@ export class DialogVaccineComponent implements OnInit {
   ngOnInit(): void {
     if (this.editData) {
       this.actionBtn = "Actualizar";
-      this.vaccineForm.controls['name'].setValue(this.editData.name);
-      this.vaccineForm.controls['quantity'].setValue(this.editData.quantity);
-      this.vaccineForm.controls['restDays'].setValue(this.editData.restDays);
-      this.vaccineForm.controls['completeDose'].setValue(this.editData.completeDose);
+      this.vaccineDialogForm.controls['name'].setValue(this.editData.name);
+      this.vaccineDialogForm.controls['quantity'].setValue(this.editData.quantity);
+      this.vaccineDialogForm.controls['restDays'].setValue(this.editData.restDays);
+      this.vaccineDialogForm.controls['completeDose'].setValue(this.editData.completeDose);
     }
   }
 
   saveVaccineModal() {
-    const _vaccine = this.vaccineForm.value;
-    console.log("v ",_vaccine);
+    const _vaccine = this.vaccineDialogForm.value;
     if (!this.editData) {
-      this.vaccineService.addVaccine(_vaccine).subscribe(
-        {
-          next: (res: any) => {
-            this.notificationMessage(res.message as string);
-            this.vaccineForm.reset();
-            this.dialogRef.close('save');
-          }, 
-          error: (err) => {
-            this.notificationMessage(err);
-          },
-        }
-      );
+      this.vaccineService.addVaccine(_vaccine).subscribe({
+        next: (res: any) => {
+          this.notificationMessage(res.message as string);
+          this.vaccineDialogForm.reset();
+          this.dialogRef.close('save');
+        }, 
+        error: (err) => {
+          this.notificationMessage(err);
+        },
+      });
     } else {
       this.updateVaccine(_vaccine);
     }
-    
   }
 
   public updateVaccine(vaccine: Vaccine) {
     vaccine.id = this.editData.id;
     if (this) {
       this.vaccineService.updateVaccine(vaccine).subscribe({
-        next: (value) => {
-          this._snackBar.open("Se actualizó","",
-          {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
-          this.vaccineForm.reset();
+        next: (res: any) => {
+          this.notificationMessage(res.message as string);
+          this.vaccineDialogForm.reset();
           this.dialogRef.close('update');
-          }, error(err) {
-            alert("No se pudo actualizar");
+          }, 
+          error: (err) => {
+            this.notificationMessage(err);
           },
         });
-    }  
+    }
    }
    /**
    * Method for throw a notification
@@ -86,8 +82,4 @@ export class DialogVaccineComponent implements OnInit {
           verticalPosition:'top'
         });
     }
-    openVaccineNotification() {
-    this._snackBar.open("Registrado", "salir");
-  }
-
 }

@@ -66,7 +66,7 @@ export class DialogPatientCareComponent implements OnInit {
         this.dialogRef.close();
       }
     });
-    this.putDataToForm();
+    this.putDataAddForm();
   }
 
   getPatientsList() {
@@ -88,7 +88,7 @@ export class DialogPatientCareComponent implements OnInit {
 
   }
 
-  putDataToForm() {
+  putDataAddForm() {
     let _patientCares: PatientCare [] = [];
     let _patientCare: PatientCare | undefined;
     this.patientCareDialogForm.controls['patient'].valueChanges
@@ -103,7 +103,7 @@ export class DialogPatientCareComponent implements OnInit {
                 _patientCare = _patientCares.find(pc => pc.patient?.id === this.patientCareDialogForm?.value.patient?.id);
               }
               
-              this.patientCareService.getLastPatientCareByIdPatient(_patientCare?.patient.id || 0)
+              this.patientCareService.getLastPatientCareByPatientId(_patientCare?.patient.id || 0)
                 .subscribe(pc => {
                   this.doseDate = this.patientCare?.doseDate;
                   if (pc) {
@@ -129,12 +129,12 @@ export class DialogPatientCareComponent implements OnInit {
   }
 
   saveModal(){
-    const doseDateFormatter = new Date(this.patientCareDialogForm.value.doseDate);
+    let doseDateFormatter = new Date(this.patientCareDialogForm.value.doseDate);
     let _doseDate = new Date();
     let _lastDoseDate = new Date();
     const combinedForms: any = {
-      idPatient: this.patientCareDialogForm.value.patient.id,
-      idVaccine: this.patientCareDialogForm.value.vaccine.id,
+      patientId: this.patientCareDialogForm.value.patient.id,
+      vaccineId: this.patientCareDialogForm.value.vaccine.id,
       dose: this.patientCareDialogForm.value.dose,
       doseDate: doseDateFormatter.toISOString().split("T")[0],
     };
@@ -149,8 +149,8 @@ export class DialogPatientCareComponent implements OnInit {
           _doseDate.setMonth(_lastDoseDate.getMonth());
           _doseDate.setFullYear(_lastDoseDate.getFullYear());
 
-          _doseDate.setDate(_lastDoseDate.getDate()+this.patientCareDialogForm.value.vaccine.days);
-          doseDateFormatter.setDate(doseDateFormatter.getDate()+this.patientCareDialogForm.value.vaccine.days);
+          _doseDate.setDate(_lastDoseDate.getDate()+this.patientCareDialogForm.value.vaccine.restDays);
+          doseDateFormatter.setDate(doseDateFormatter.getDate()+this.patientCareDialogForm.value.vaccine.restDays);
 
           if(doseDateFormatter.valueOf() >= _doseDate.valueOf() || this.patientCareDialogForm.value.dose < this.patientCareDialogForm.value.vaccine.completeDose) {
             if(this.patientCareDialogForm.value.dose < this.patientCareDialogForm.value.vaccine.completeDose && !this.patientCare?.completeDose) {
@@ -167,8 +167,6 @@ export class DialogPatientCareComponent implements OnInit {
                   { duration:5000, horizontalPosition:'center', verticalPosition:'top'});            
               }
             }
-            this.patientCareDialogForm.reset();
-            this.dialogRef.close('save');
           } else {
             this._snackBar.open("El paciente no se ha añadido, necesita pasar los dias de descanso, debe volver el: ",
               _doseDate.toISOString().split("T")[0],
@@ -178,6 +176,8 @@ export class DialogPatientCareComponent implements OnInit {
                 verticalPosition:'top'
               });
           }
+          this.patientCareDialogForm.reset();
+          this.dialogRef.close('save');
         },
         error: (err) => {
           this.notificationMessage(err);

@@ -60,6 +60,8 @@ export class VaccinesComponent implements OnInit {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             localStorage.setItem('getVaccines', JSON.stringify(this.dataSource.data));
+          } else {
+            this.dataSource = new MatTableDataSource(res);
           }
         },
         error: (err) => {
@@ -73,7 +75,7 @@ export class VaccinesComponent implements OnInit {
     if (_res) {
       this.vaccineService.deleteVaccine(id).subscribe({
         next: (res) => {
-          this.notificationMessage(res);
+          this.notificationMessage(res.message);
           this.vaccines.pop();
           this.getVaccines();
         }, 

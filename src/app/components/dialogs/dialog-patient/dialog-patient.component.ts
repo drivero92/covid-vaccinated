@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PatientService } from 'src/app/services/patient.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Patient } from 'src/app/models/patient';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-dialog-patient',
@@ -11,26 +11,65 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./dialog-patient.component.css']
 })
 export class DialogPatientComponent implements OnInit {
-  
+
   actionBtn: string = "Guardar";
   textRegEx = /^[a-zA-Z ]+$/;
-  numberRegEx = /\-?\d*\.?\d{1,2}/;  
+  numberRegEx = /\-?\d*\.?\d{1,2}/;
   patientDialogForm: FormGroup = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern(this.textRegEx)]],
-      lastName: ['', [Validators.required,Validators.pattern(this.textRegEx)]],
-      ci: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
-      age: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
-    });
+    name: ['', [Validators.required, Validators.pattern(this.textRegEx)]],
+    lastName: ['', [Validators.required, Validators.pattern(this.textRegEx)]],
+    ci: ['', [Validators.required]],
+    age: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
+  });
 
   constructor(
-    private patientService: PatientService, 
-    private formBuilder: FormBuilder, 
+    private patientService: PatientService,
+    private formBuilder: FormBuilder,
+    private notification: NotificationService,
     @Inject(MAT_DIALOG_DATA) public editData: Patient,
-    private dialogRef: MatDialogRef<DialogPatientComponent>,
-    private _snackBar: MatSnackBar) { }
+    private dialogRef: MatDialogRef<DialogPatientComponent>) { }
 
   ngOnInit(): void {
-    this.patientDialogForm;
+    this.putDataInForm();
+    this.exitModalDialogByClick();
+  }
+  saveModal() {
+    let _patient: Patient = this.patientDialogForm.value;
+    if (!this.editData) {
+      this.patientService.addPatient(_patient).subscribe({
+        next: (res: any) => {
+          this.notification.notificationMessage(res.message as string);
+          this.patientDialogForm.reset();
+          this.dialogRef.close('save');
+        },
+        error: (err) => {
+          this.notification.notificationMessage(err,true);
+        }
+      });
+    } else {
+      this.updatePatient(_patient);
+    }
+  }
+  /**
+   * Method that comes from "saveModal()" for update a patient from the table
+   * @param patient Patient
+   */
+  updatePatient(patient: Patient) {
+    patient.id = this.editData.id;
+    if (patient) {
+      this.patientService.updatePatient(patient).subscribe({
+        next: (res: any) => {
+          this.notification.notificationMessage(res.message);
+          this.patientDialogForm.reset();
+          this.dialogRef.close('update');
+        },
+        error: (err) => {
+          this.notification.notificationMessage(err,true);
+        },
+      });
+    }
+  }
+  putDataInForm() {
     if (this.editData) {
       this.actionBtn = "Actualizar";
       this.patientDialogForm.controls['name'].setValue(this.editData.name);
@@ -38,7 +77,8 @@ export class DialogPatientComponent implements OnInit {
       this.patientDialogForm.controls['ci'].setValue(this.editData.ci);
       this.patientDialogForm.controls['age'].setValue(this.editData.age);
     }
-
+  }
+  exitModalDialogByClick() {
     this.dialogRef.disableClose = true;
     this.dialogRef.backdropClick().subscribe(_ => {
       let cn = confirm('Esta seguro de salir?')
@@ -47,78 +87,14 @@ export class DialogPatientComponent implements OnInit {
       }
     });
   }
-
-  saveModal(){
-    let patients: Patient[] =[];
-    let _patient: Patient = this.patientDialogForm.value;
-    /* if(localStorage.getItem('patientsLS') != null) {
-      patients = JSON.parse(localStorage.getItem('patientsLS') || '{}'); 
-    } */
-    //patients.push(patient);
-    //localStorage.setItem('patientsLS',JSON.stringify(patients));
-
-    if (!this.editData) {
-      this.patientService.addPatient(_patient).subscribe(
-        {
-          next: (res: any) => {
-            this.notificationMessage(res.message as string);
-            this.patientDialogForm.reset();
-            this.dialogRef.close('save');
-          },
-          error: (err) => {
-            this.notificationMessage(err);
-          }
-        }
-      );
-    } else {
-      this.updatePatient(_patient);
-    }
-    
-  }
-  /**
-   * Method for throw a notification
-   * @param message string
-   */
-   notificationMessage(message: string) {
-    this._snackBar.open(message,void 0, { 
-        duration:3000, 
-        horizontalPosition:'center', 
-        verticalPosition:'top'
-      });
-    }
-
-  updatePatient(patient: Patient) {
-    patient.id = this.editData.id;
-    if(patient) {
-      this.patientService.updatePatient(patient).subscribe({
-        next: (value) => {
-          this._snackBar.open("Se actualizó","",
-          {duration:3000,horizontalPosition:'center',verticalPosition:'top'});
-          this.patientDialogForm.reset();
-          this.dialogRef.close('update');
-        }, error: (err) => {
-          alert("No se pudo actualizar");
-        },
-      });
-        //error lanza el error de que no pudo actualizar
-        //porque esta en la tabla de atencion al paciente y
-        //al paciente y pregunta despues si desesa añadir
-    }
-  }
-
-  openPatientExitNotification() {
-    this._snackBar.open("Registrado", "salir");
-  }
-
   @HostListener('window:keyup.esc') onKeyUp() {
-    let cn = confirm('Sure ?')
+    let cn = confirm('Esta seguro de salir?')
     if (cn) {
       this.dialogRef.close();
     }
   }
-
   @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
-        console.log('event:', event);
-        event.returnValue = false;
+    console.log('event:', event);
+    event.returnValue = false;
   }
 }

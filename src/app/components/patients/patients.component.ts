@@ -9,9 +9,8 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import { PatientService } from 'src/app/services/patient.service';
 import { Patient } from 'src/app/models/patient';
 import { DialogPatientComponent } from '../dialogs/dialog-patient/dialog-patient.component';
-import { PatientCareService } from 'src/app/services/patient-care.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogVaccinationHistoryComponent } from '../dialogs/dialog-vaccination-history/dialog-vaccination-history.component';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-patients',
@@ -23,7 +22,6 @@ export class PatientsComponent implements OnInit {
   patientsTitle: string = "Pacientes";
   displayedColumns: string[] = ["Nombre", "Apellido", "CI", "Edad", "Acciones"];
   dataSource!: MatTableDataSource<any>;
-  patient: Patient | undefined;
   patients: Patient [] = [];
   modeQuery: number;
   dataErrorMessage: string = '';
@@ -39,10 +37,9 @@ export class PatientsComponent implements OnInit {
     });
 
   constructor(
-    private patientService: PatientService, 
-    private patientCareService: PatientCareService,
+    private patientService: PatientService,
     private formBuilder: FormBuilder, 
-    private _snackBar: MatSnackBar,
+    private notification: NotificationService,
     private dialog: MatDialog) 
   { 
     this.modeQuery = 0;
@@ -51,7 +48,6 @@ export class PatientsComponent implements OnInit {
   ngOnInit(): void {
     this.getPatients();
   }
-
   /* Get a list of patients registered
   We need be careful with dataSource, 
   it should be match displayedColumns 
@@ -75,7 +71,6 @@ export class PatientsComponent implements OnInit {
           }
         });
   }
-
   postPatient(): void {    
     const p: any = {
       name: this.patientForm.value.patientName,
@@ -87,50 +82,23 @@ export class PatientsComponent implements OnInit {
       this.patients.push(patient);
     });
     this.getPatients();
-  }
-
-  detailsPatientVaccinated() {
-    // const id = this.patientForm.value.id;
-    // this.patientCareService.getPatientCareListByIdPatient(id).subscribe({
-    //   next: (value) => {
-    //     this.patient = this.patientForm.value.id;
-    //   },
-    // })
-    //revisar patient detail para que no muestre las dos tablas de detalles del paciente
-    // y tambien la lista de vacunas
-    console.log(this.patientForm.value.name);
-    this.patient = this.patientForm.value.id;
-  }
-
+  }  
   removePatient(id: number) {
     //revisar si esta intentando eliminar un paciente que ya se vacuno
     const _res = confirm('Desea eliminar?');
     if (_res) {
       this.patientService.deletePatient(id).subscribe({
           next: (res) => {
-            this.notificationMessage(res.message as string);
+            this.notification.notificationMessage(res.message as string);
             this.patients.pop();
             this.getPatients();
           },
           error: (err) => {
-            this.notificationMessage(err);
+            this.notification.notificationMessage(err,true);
           }
         });
     }
   }
-  /**
-   * Method for throw a notification
-   * @param message string
-   */
-   notificationMessage(message: string) {
-    this._snackBar.open(
-      message,void 0, { 
-        duration:3000, 
-        horizontalPosition:'center', 
-        verticalPosition:'top'
-      });
-  }
-
   openPatientDialog() {
     const dialogRef = this.dialog
       .open(DialogPatientComponent, {
@@ -142,7 +110,6 @@ export class PatientsComponent implements OnInit {
         }
       });
   }
-
   editPatient(element: any) {
     const dialogRef = this.dialog
       .open(DialogPatientComponent, {
@@ -155,7 +122,6 @@ export class PatientsComponent implements OnInit {
         }
       });
   }
-
   viewPatientVaccinated(element: any) {
     const dialogRef = this.dialog
       .open(DialogVaccinationHistoryComponent, {
@@ -163,8 +129,10 @@ export class PatientsComponent implements OnInit {
         data: element,
       });
   }
-
-  /* Filter the table with any value entered */
+  /**
+   * Filter the table with any value entered
+   * @param event Event
+   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     if(this.dataSource) {

@@ -21,7 +21,8 @@ export class VaccineService {
 
   getVaccine(id: number): Observable<Vaccine> {
     const url = `${this.urlVaccines}/get/${id}`;
-    return this.http.get<Vaccine>(url);
+    return this.http.get<Vaccine>(url)
+      .pipe(catchError(this.handleError));
   }
 
   addVaccine(Vaccine: Vaccine): Observable<Vaccine> {
@@ -32,7 +33,8 @@ export class VaccineService {
 
   updateVaccine(Vaccine: Vaccine): Observable<Vaccine> {
     const url = `${this.urlVaccines}/update`;
-      return this.http.put<Vaccine>(url, Vaccine);
+      return this.http.put<Vaccine>(url, Vaccine)
+        .pipe(catchError(this.handleError));
   }
 
   deleteVaccine(id: number): Observable<any> {

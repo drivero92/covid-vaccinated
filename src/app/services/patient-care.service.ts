@@ -21,21 +21,25 @@ export class PatientCareService {
   getPatientCareListByPatientId(id: number): Observable<PatientCare[]> {
     const url = `${this.urlPatientCare}/list_patient_care/${id}`;
     return this.http.get<PatientCare[]>(url)
+      .pipe(catchError(this.handleError));
   }
 
   getLastPatientCareByPatientId(id: number): Observable<PatientCare> {
     const url = `${this.urlPatientCare}/get/last_patient_care_byPatientId/${id}`;
     return this.http.get<PatientCare>(url)
+      .pipe(catchError(this.handleError));
   }
 
   getPatientCareListByVaccineId(id: number): Observable<PatientCare[]> {
     const url = `${this.urlPatientCare}/list_vaccines_patient_care/${id}`;
     return this.http.get<PatientCare[]>(url)
+      .pipe(catchError(this.handleError));
   }
 
   getPatientCareListByDose(dose: number): Observable<PatientCare[]> {
     const url = `${this.urlPatientCare}/list_vaccines_patient_care_byDose/${dose}`;
     return this.http.get<PatientCare[]>(url)
+      .pipe(catchError(this.handleError));
   }
 
   addPatientCare(patientCare: any): Observable<PatientCare> {

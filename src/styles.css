@@ -38,6 +38,11 @@ h1 {
     cursor: auto;
   }
 
+  .custom-snackbar {
+    background: #444;
+    color: #eee;
+  }
+
   .mat-simple-snackbar {
     justify-content: center !important;
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpErrorResponse,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import { Patient } from '../models/patient';
@@ -21,27 +21,30 @@ export class PatientService {
 
   getPatient(id: number): Observable<Patient> {
     const url = `${this.urlPatients}/get/${id}`;
-    return this.http.get<Patient>(url);
+    return this.http.get<Patient>(url)
+      .pipe(catchError(this.handleError));
   }
 
   addPatient(patient: Patient): Observable<Patient> {
     const url = `${this.urlPatients}/save`;
-      return this.http.post<Patient>(url, patient)
-        .pipe(catchError(this.handleError));
+    return this.http.post<Patient>(url, patient)
+      .pipe(catchError(this.handleError));
   }
 
   updatePatient(patient: Patient): Observable<Patient> {
     const url = `${this.urlPatients}/update`;
-      return this.http.put<Patient>(url, patient);
+    return this.http.put<Patient>(url, patient)
+      .pipe(catchError(this.handleError));
   }
 
   deletePatient(id: number): Observable<any> {
     const url = `${this.urlPatients}/delete/${id}`;
-    return this.http.delete<any>(url);
+    return this.http.delete<any>(url)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
-    let errorMessage='';
+    let errorMessage = '';
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error);

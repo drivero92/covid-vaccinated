@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, HostListener,Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Vaccine } from 'src/app/models/vaccine';
+import { NotificationService } from 'src/app/services/notification.service';
 import { VaccineService } from 'src/app/services/vaccine.service';
 
 @Component({
@@ -13,29 +13,25 @@ import { VaccineService } from 'src/app/services/vaccine.service';
 export class DialogVaccineComponent implements OnInit {
 
   actionBtn: string = "Guardar";
+  textRegEx = /^[a-zA-Z ]+$/;
+  numberRegEx = /\-?\d*\.?\d{1,2}/;
   vaccineDialogForm: FormGroup = this.formBuilder.group({
-    name: ['', Validators.required],
-    quantity: ['', Validators.required],
-    restDays: ['', Validators.required],
-    completeDose: ['', Validators.required],
+    name: ['', [Validators.required, Validators.pattern(this.textRegEx)]],
+    quantity: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
+    restDays: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
+    completeDose: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
   });
 
   constructor(
     private vaccineService: VaccineService,
     private formBuilder: FormBuilder,
-    private _snackBar: MatSnackBar,
+    private notification: NotificationService,
     @Inject(MAT_DIALOG_DATA) public editData: Vaccine,
-    private dialogRef: MatDialogRef<DialogVaccineComponent>,
-    ) { }
+    private dialogRef: MatDialogRef<DialogVaccineComponent>) { }
 
   ngOnInit(): void {
-    if (this.editData) {
-      this.actionBtn = "Actualizar";
-      this.vaccineDialogForm.controls['name'].setValue(this.editData.name);
-      this.vaccineDialogForm.controls['quantity'].setValue(this.editData.quantity);
-      this.vaccineDialogForm.controls['restDays'].setValue(this.editData.restDays);
-      this.vaccineDialogForm.controls['completeDose'].setValue(this.editData.completeDose);
-    }
+    this.putDataInForm();
+    this.exitModalDialogByClick();
   }
 
   saveVaccineModal() {
@@ -43,43 +39,59 @@ export class DialogVaccineComponent implements OnInit {
     if (!this.editData) {
       this.vaccineService.addVaccine(_vaccine).subscribe({
         next: (res: any) => {
-          this.notificationMessage(res.message as string);
+          this.notification.notificationMessage(res.message as string);
           this.vaccineDialogForm.reset();
           this.dialogRef.close('save');
         }, 
         error: (err) => {
-          this.notificationMessage(err);
+          this.notification.notificationMessage(err,true);
         },
       });
     } else {
       this.updateVaccine(_vaccine);
     }
   }
-
   public updateVaccine(vaccine: Vaccine) {
     vaccine.id = this.editData.id;
     if (this) {
       this.vaccineService.updateVaccine(vaccine).subscribe({
         next: (res: any) => {
-          this.notificationMessage(res.message as string);
+          this.notification.notificationMessage(res.message);
           this.vaccineDialogForm.reset();
           this.dialogRef.close('update');
           }, 
           error: (err) => {
-            this.notificationMessage(err);
+            this.notification.notificationMessage(err,true);
           },
         });
     }
    }
-   /**
-   * Method for throw a notification
-   * @param message string
-   */
-    notificationMessage(message: string) {
-      this._snackBar.open(message,undefined, {
-          duration:3000,
-          horizontalPosition:'center',
-          verticalPosition:'top'
-        });
+   putDataInForm() {
+    if (this.editData) {
+      this.actionBtn = "Actualizar";
+      this.vaccineDialogForm.controls['name'].setValue(this.editData.name);
+      this.vaccineDialogForm.controls['quantity'].setValue(this.editData.quantity);
+      this.vaccineDialogForm.controls['restDays'].setValue(this.editData.restDays);
+      this.vaccineDialogForm.controls['completeDose'].setValue(this.editData.completeDose);
     }
+   }
+   exitModalDialogByClick() {
+    this.dialogRef.disableClose = true;
+    this.dialogRef.backdropClick().subscribe(_ => {
+      let cn = confirm('Esta seguro de salir?')
+      if (cn) {
+        this.dialogRef.close();
+      }
+    });
+  }
+   @HostListener('window:keyup.esc') onKeyUp() {
+    let cn = confirm('Esta seguro de salir?')
+    if (cn) {
+      this.dialogRef.close();
+    }
+  }
+  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+    console.log('event:', event);
+    event.returnValue = false;
+  }
 }

@@ -6,6 +6,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import { NotificationService } from 'src/app/services/notification.service';
 
 import { VaccineService } from 'src/app/services/vaccine.service'; 
 import { Vaccine } from '../../models/vaccine';
@@ -32,7 +33,7 @@ export class VaccinesComponent implements OnInit {
   constructor(
     private vaccineService: VaccineService, 
     private formBuilder: FormBuilder,
-    private _snackBar: MatSnackBar,
+    private notification: NotificationService,
     private vaccineDialog: MatDialog) 
   {
     this.vaccineForm = this.formBuilder.group(
@@ -50,9 +51,7 @@ export class VaccinesComponent implements OnInit {
   }
 
   getVaccines() {
-    this.vaccineService.getVaccines()
-    .subscribe(
-      {
+    this.vaccineService.getVaccines().subscribe({
         next:(res)=>{
           if (res) {
             this.vaccines = res;
@@ -75,12 +74,12 @@ export class VaccinesComponent implements OnInit {
     if (_res) {
       this.vaccineService.deleteVaccine(id).subscribe({
         next: (res) => {
-          this.notificationMessage(res.message);
+          this.notification.notificationMessage(res.message);
           this.vaccines.pop();
           this.getVaccines();
         }, 
         error: (err) => {
-          this.notificationMessage(err);
+          this.notification.notificationMessage(err,true);
         },
       });
     }
@@ -129,16 +128,4 @@ export class VaccinesComponent implements OnInit {
       }
     }    
   }
-  /**
-   * Method for throw a notification
-   * @param message string
-   */
-   notificationMessage(message: string) {
-    this._snackBar.open(message,undefined, {
-        duration:3000,
-        horizontalPosition:'center',
-        verticalPosition:'top'
-      });
-  }
-
 }

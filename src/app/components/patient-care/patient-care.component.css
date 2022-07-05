@@ -34,3 +34,7 @@ section {
     text-align: center;
     justify-content:center;
   }
+
+  ::ng-deep .warning{
+    background: 'yellow';
+ }

@@ -1,0 +1,60 @@
+<mat-card class="example-card">
+    <mat-card-title>{{fullVaccineTitle}}</mat-card-title>
+
+    <!-- Filter each word of each column-->
+    <!-- <div>
+        <mat-form-field appearance="standard">
+            <mat-label>Buscar las vacunas</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Introducir busqueda" #input>
+        </mat-form-field>
+    </div> -->
+    <!-- <div *ngIf="dataErrorMessage">
+        <h4 class="text-danger">{{dataErrorMessage}}</h4>
+    </div> -->
+    <!-- Container of vaccines table -->
+    <div class="mat-elevation-z8" style="width: 1000px;margin: auto;">
+        <button mat-raised-button type="button" color="primary" style="float: right;" (click)="openVaccineDialog()">Agregar vacuna</button>
+        <table mat-table [dataSource]="dataSource" style="width: 1000px; height: 200px; margin: auto;">
+        <!-- Name Column -->
+        <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let element"> {{element.vaccine.name}} </td>
+        </ng-container>
+
+        <!-- Days Column -->
+        <ng-container matColumnDef="Días de descanso">
+            <th mat-header-cell *matHeaderCellDef> Días de descanso </th>
+            <td mat-cell *matCellDef="let element"> {{element.vaccine.restDays}} </td>
+        </ng-container>
+
+        <!-- Quantity Column -->
+        <ng-container matColumnDef="Cantidad">
+            <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+            <td mat-cell *matCellDef="let element"> {{element.vaccine.quantity}} </td>
+        </ng-container>
+
+        <!-- Complete dose Column -->
+        <ng-container matColumnDef="Dosis completa">
+            <th mat-header-cell *matHeaderCellDef> Dosis completa </th>
+            <td mat-cell *matCellDef="let element"> {{element.vaccine.numberDoses}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-icon-button 
+                        class="btn btn-danger-mx-3" 
+                        (click)="viewCompatibleVaccines(element)">
+                    <mat-icon color="primary">info</mat-icon>
+                </button>
+            </td>
+        </ng-container> 
+
+        <!-- Display Columns -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+</div>
+</mat-card>

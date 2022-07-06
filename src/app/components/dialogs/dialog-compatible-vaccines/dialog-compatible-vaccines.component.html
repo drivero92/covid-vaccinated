@@ -1,0 +1,12 @@
+<h2>Vacunas compatibles con {{viewData.vaccine.name | uppercase}}</h2>
+<div>
+    <table>
+        <tr>
+            <th *ngFor="let header of patientCareHeaderDetail">{{header}}</th>
+        </tr>
+        <tr *ngFor="let vaccine of vaccineList">
+            <td>{{vaccine.name}}</td>
+            <td>{{vaccine.numberDoses}}</td>
+        </tr>
+    </table>
+</div>

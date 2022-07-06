@@ -68,7 +68,6 @@ export class DialogPatientCareComponent implements OnInit {
       this.vaccineService.getVaccines()
         .subscribe(vaccines => this.vaccines = vaccines);
     }
-
   }
   putDataAddForm() {
     this.patientCareDialogForm.controls['patient'].valueChanges

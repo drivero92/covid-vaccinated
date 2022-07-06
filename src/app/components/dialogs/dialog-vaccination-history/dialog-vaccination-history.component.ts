@@ -4,6 +4,7 @@ import { PatientCareService } from 'src/app/services/patient-care.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogPatientComponent } from '../dialog-patient/dialog-patient.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-dialog-vaccination-history',
@@ -19,6 +20,7 @@ export class DialogVaccinationHistoryComponent implements OnInit {
 
   constructor(
     private patientCareService: PatientCareService,
+    private notificationService: NotificationService,
     @Inject(MAT_DIALOG_DATA) public viewData: PatientCare,
     private dialogRef: MatDialogRef<DialogVaccinationHistoryComponent>,
   ) { }
@@ -29,8 +31,7 @@ export class DialogVaccinationHistoryComponent implements OnInit {
   }
 
   getPatientCare() {
-    this.patientCareService.getPatientCareListByPatientId(this.viewData.id).subscribe(
-      {
+    this.patientCareService.getPatientCareListByPatientId(this.viewData.id).subscribe({
         next: (value) => {
           if (value) {
             this.vaccineFlag = true;
@@ -39,11 +40,11 @@ export class DialogVaccinationHistoryComponent implements OnInit {
           }
           this.patientCareList = value;
           // this.dataSource = new MatTableDataSource(value);          
-        }, error: (err) => {
-          alert("Error al cargar la lista del paciente: "+ this.viewData.id);
+        }, 
+        error: (err) => {
+          this.notificationService.notificationMessage(err, true);
         },
-      }
-      );
+      });
   }
 
 }

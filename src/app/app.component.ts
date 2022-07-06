@@ -11,7 +11,7 @@ export class AppComponent {
   routes: any[] = [
     {
       name: 'Pacientes vacunados',
-      router: ['patientcares'],
+      router: ['patientCares'],
     },
     {
       name:'Pacientes',
@@ -20,6 +20,10 @@ export class AppComponent {
     {
       name: 'Vacunas',
       router: ['vaccines'],
+    },
+    {
+      name: 'Vacunas completas',
+      router: ['fullVaccines'],
     },
   ]
 }

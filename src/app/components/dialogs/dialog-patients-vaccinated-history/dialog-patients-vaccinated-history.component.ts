@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { PatientCare } from 'src/app/models/patient-care';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PatientCareService } from 'src/app/services/patient-care.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-dialog-patients-vaccinated-history',
@@ -16,6 +17,7 @@ export class DialogPatientsVaccinatedHistoryComponent implements OnInit {
 
   constructor(
     private patientCareService: PatientCareService,
+    private notificationService: NotificationService,
     @Inject(MAT_DIALOG_DATA) public viewData: PatientCare,
     private dialogRef: MatDialogRef<DialogPatientsVaccinatedHistoryComponent>,
     ) { }
@@ -33,10 +35,11 @@ export class DialogPatientsVaccinatedHistoryComponent implements OnInit {
           this.patientFlag = false;
         }
         this.patientCareList = value;        
-      }, error: (err) => {
-        alert("No se pudo cargar el registro de pacientes vacunados");
+      }, 
+      error: (err) => {
+        this.notificationService.notificationMessage(err, true);
       },
-    })
+    });
   }
 
 }

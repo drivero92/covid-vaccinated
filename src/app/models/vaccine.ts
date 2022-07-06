@@ -3,5 +3,5 @@ export interface Vaccine {
     name: string,
     quantity: number,
     restDays: number,
-    completeDose: number,
+    numberDoses: number,
 }

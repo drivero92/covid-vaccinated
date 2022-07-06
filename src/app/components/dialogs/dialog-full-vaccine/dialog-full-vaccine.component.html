@@ -1,0 +1,32 @@
+<!-- (ngSubmit)="submit()" -->
+<form [formGroup]="fullVaccineForm">
+    <div>
+        <mat-form-field appearance="legacy">
+            <input type="text" matInput placeholder="Nombre" formControlName="name">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="legacy">
+            <input type="text" matInput placeholder="Cantidad" formControlName="quantity">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="legacy">
+            <input matInput placeholder="Días de descanso" formControlName="restDays">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="legacy">
+            <input matInput placeholder="Dosis completa" formControlName="numberDoses">
+        </mat-form-field>
+    </div>
+    <div>
+        <label formArrayName="vaccines" *ngFor="let order of vaccinesFormArray.controls; let i = index">
+            <input type="checkbox" [formControlName]="i">
+            {{vaccineList[i].name}}
+            <br>
+        </label>
+        <br>
+    </div>
+    <button mat-raised-button color="primary">{{actionBtn}}</button>
+</form>

@@ -4,30 +4,37 @@
         <div>
             <mat-form-field appearance="legacy">
                 <input type="text" matInput placeholder="Nombre" formControlName="name">
-              </mat-form-field>
+            </mat-form-field>
         </div>
         <div>
             <mat-form-field appearance="legacy">
                 <input type="text" matInput placeholder="Cantidad" formControlName="quantity">
-              </mat-form-field>
+            </mat-form-field>
         </div>
         <div>
             <mat-form-field appearance="legacy">
                 <input matInput placeholder="Días de descanso" formControlName="restDays">
-              </mat-form-field>
+            </mat-form-field>
         </div>
         <div>
             <mat-form-field appearance="legacy">
-                <input matInput placeholder="Dosis completa" formControlName="completeDose">
-              </mat-form-field>
+                <input matInput placeholder="Dosis completa" formControlName="numberDoses">
+            </mat-form-field>
         </div>
+        <!-- <div>
+            <mat-form-field appearance="legacy">
+                <ng-container  *ngFor="let vaccine of vaccines">
+                    <input type="checkbox"> {{vaccine.name}}
+                </ng-container>
+            </mat-form-field>
+            <label formArrayName="orders" *ngFor="let order of ordersFormArray.controls; let i = index">
+                <input type="checkbox" [formControlName]="i">
+                {{ordersData[i].name}}
+            </label>
+        </div> -->
         <div>
-            <button type="submit" 
-            [disabled]="vaccineDialogForm.invalid" 
-                    class="btn btn-danger" 
-                    mat-raised-button
-                    color="primary"
-                    (click)="saveVaccineModal()">{{actionBtn}}</button>
+            <button type="submit" [disabled]="vaccineDialogForm.invalid" class="btn btn-danger" mat-raised-button
+                color="primary" (click)="saveVaccineModal()">{{actionBtn}}</button>
         </div>
     </form>
 </div>

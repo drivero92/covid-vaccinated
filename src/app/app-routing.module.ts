@@ -8,6 +8,7 @@ import { PatientDetailComponent } from './components/details/patient-detail/pati
 import { PatientCareDetailComponent } from './components/details/patient-care-detail/patient-care-detail.component';
 import { VaccineDetailComponent } from './components/details/vaccine-detail/vaccine-detail.component';
 import { LoginComponent } from './components/login/login.component';
+import { FullVaccineComponent } from './components/full-vaccine/full-vaccine.component';
 
 const routes: Routes = [
   //pathMatch: 'full or prefix' is:
@@ -17,11 +18,12 @@ const routes: Routes = [
   { path: '', redirectTo: 'patientcares', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
   { path: 'patientCares/:id', component: PatientCareDetailComponent },
-  { path: 'patientcares', component: PatientCareComponent },
+  { path: 'patientCares', component: PatientCareComponent },
   { path: 'patients', component: PatientsComponent },
   { path: 'patients/:id', component: PatientDetailComponent },
   { path: 'vaccines', component: VaccinesComponent },
-  { path: 'vaccines/:id', component: VaccineDetailComponent },  
+  { path: 'vaccines/:id', component: VaccineDetailComponent }, 
+  { path: 'fullVaccines', component: FullVaccineComponent },
   { path: '**', redirectTo: 'patientcares', pathMatch: 'prefix' }, 
 ];
 

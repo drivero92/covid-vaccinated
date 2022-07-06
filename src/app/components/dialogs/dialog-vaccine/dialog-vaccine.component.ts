@@ -1,5 +1,5 @@
 import { Component, HostListener,Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Vaccine } from 'src/app/models/vaccine';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -13,13 +13,15 @@ import { VaccineService } from 'src/app/services/vaccine.service';
 export class DialogVaccineComponent implements OnInit {
 
   actionBtn: string = "Guardar";
+  vaccines: Vaccine[] = [];
   textRegEx = /^[a-zA-Z ]+$/;
   numberRegEx = /\-?\d*\.?\d{1,2}/;
   vaccineDialogForm: FormGroup = this.formBuilder.group({
     name: ['', [Validators.required, Validators.pattern(this.textRegEx)]],
     quantity: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
     restDays: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
-    completeDose: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
+    numberDoses: ['', [Validators.required, Validators.pattern(this.numberRegEx)]],
+    compatibleVaccines: new FormArray([]),
   });
 
   constructor(
@@ -30,10 +32,21 @@ export class DialogVaccineComponent implements OnInit {
     private dialogRef: MatDialogRef<DialogVaccineComponent>) { }
 
   ngOnInit(): void {
+    this.getVaccineList();
     this.putDataInForm();
-    this.exitModalDialogByClick();
+    this.exitModalDialogByClick();    
   }
-
+  /* get ordersFormArray() {
+    return this.form.controls.orders as FormArray;
+  } */
+  getVaccineList() {
+    if (localStorage.getItem('getVaccines') && '{}') {
+      this.vaccines = JSON.parse(localStorage.getItem('getVaccines') || '{}');
+    } else {
+      this.vaccineService.getVaccines()
+        .subscribe(vaccines => this.vaccines = vaccines);
+    }
+  }
   saveVaccineModal() {
     const _vaccine = this.vaccineDialogForm.value;
     if (!this.editData) {
@@ -72,7 +85,7 @@ export class DialogVaccineComponent implements OnInit {
       this.vaccineDialogForm.controls['name'].setValue(this.editData.name);
       this.vaccineDialogForm.controls['quantity'].setValue(this.editData.quantity);
       this.vaccineDialogForm.controls['restDays'].setValue(this.editData.restDays);
-      this.vaccineDialogForm.controls['completeDose'].setValue(this.editData.completeDose);
+      this.vaccineDialogForm.controls['numberDoses'].setValue(this.editData.numberDoses);
     }
    }
    exitModalDialogByClick() {

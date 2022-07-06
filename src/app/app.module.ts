@@ -20,6 +20,9 @@ import { VaccineDetailComponent } from './components/details/vaccine-detail/vacc
 import { DialogVaccinationHistoryComponent } from './components/dialogs/dialog-vaccination-history/dialog-vaccination-history.component';
 import { DialogPatientsVaccinatedHistoryComponent } from './components/dialogs/dialog-patients-vaccinated-history/dialog-patients-vaccinated-history.component';
 import { LoginComponent } from './components/login/login.component';
+import { FullVaccineComponent } from './components/full-vaccine/full-vaccine.component';
+import { DialogCompatibleVaccinesComponent } from './components/dialogs/dialog-compatible-vaccines/dialog-compatible-vaccines.component';
+import { DialogFullVaccineComponent } from './components/dialogs/dialog-full-vaccine/dialog-full-vaccine.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,9 @@ import { LoginComponent } from './components/login/login.component';
     DialogVaccinationHistoryComponent,
     DialogPatientsVaccinatedHistoryComponent,
     LoginComponent,
+    FullVaccineComponent,
+    DialogCompatibleVaccinesComponent,
+    DialogFullVaccineComponent,
   ],
   imports: [
     BrowserModule,

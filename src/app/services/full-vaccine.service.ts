@@ -9,7 +9,7 @@ import { Vaccine } from '../models/vaccine';
 })
 export class FullVaccineService {
 
-  private urlFullVaccine = 'http://192.168.100.132:8080/full_vaccine';
+  private urlFullVaccine = 'http://192.168.100.132:8080/full_vaccines';
 
   constructor(private http: HttpClient) { }
 
@@ -20,20 +20,26 @@ export class FullVaccineService {
   }
 
   getVaccineList(id: number): Observable<Vaccine[]> {
-    const url = `${this.urlFullVaccine}/get_vaccines/${id}`;
+    const url = `${this.urlFullVaccine}/${id}/vaccines`;
     return this.http.get<Vaccine[]>(url)
       .pipe(catchError(this.handleError));
   }
 
-  addFullVaccine(fullVaccine: FullVaccine): Observable<FullVaccine> {
-    const url = `${this.urlFullVaccine}/save`;
+  addFullVaccine(fullVaccine: any): Observable<FullVaccine> {
+    const url = `${this.urlFullVaccine}`;
     return this.http.post<FullVaccine>(url, fullVaccine)
       .pipe(catchError(this.handleError));
   }
 
   updateFullVaccine(fullVaccine: FullVaccine): Observable<FullVaccine> {
-    const url = `${this.urlFullVaccine}/update`;
+    const url = `${this.urlFullVaccine}`;
     return this.http.put<FullVaccine>(url, fullVaccine)
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteFullVaccine(id: number): Observable<any> {
+    const url = `${this.urlFullVaccine}/${id}`;
+    return this.http.delete<any>(url)
       .pipe(catchError(this.handleError));
   }
 

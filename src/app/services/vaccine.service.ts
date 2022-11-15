@@ -9,7 +9,7 @@ import { Vaccine } from '../models/vaccine';
 })
 export class VaccineService {
 
-  private urlVaccines = 'http://192.168.100.132:8080/vaccines';
+  private urlVaccines = 'http://192.168.100.132:8080/full_vaccines';
 
   constructor(private http: HttpClient) { }
 
@@ -20,25 +20,25 @@ export class VaccineService {
   }
 
   getVaccine(id: number): Observable<Vaccine> {
-    const url = `${this.urlVaccines}/get/${id}`;
+    const url = `${this.urlVaccines}/${id}`;
     return this.http.get<Vaccine>(url)
       .pipe(catchError(this.handleError));
   }
 
   addVaccine(Vaccine: Vaccine): Observable<Vaccine> {
-    const url = `${this.urlVaccines}/save`;
+    const url = `${this.urlVaccines}`;
       return this.http.post<Vaccine>(url, Vaccine)
         .pipe(catchError(this.handleError));
   }
 
   updateVaccine(Vaccine: Vaccine): Observable<Vaccine> {
-    const url = `${this.urlVaccines}/update`;
+    const url = `${this.urlVaccines}`;
       return this.http.put<Vaccine>(url, Vaccine)
         .pipe(catchError(this.handleError));
   }
 
   deleteVaccine(id: number): Observable<any> {
-    const url = `${this.urlVaccines}/delete/${id}`;
+    const url = `${this.urlVaccines}/${id}`;
     return this.http.delete<any>(url)
       .pipe(catchError(this.handleError));
   }

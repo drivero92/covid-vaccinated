@@ -6,10 +6,12 @@ import {MatPaginator} from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import { FullVaccineService } from 'src/app/services/full-vaccine.service';
 import { NotificationService } from 'src/app/services/notification.service';
 
 import { VaccineService } from 'src/app/services/vaccine.service'; 
 import { Vaccine } from '../../models/vaccine';
+import { DialogCompatibleVaccinesComponent } from '../dialogs/dialog-compatible-vaccines/dialog-compatible-vaccines.component';
 import { DialogPatientsVaccinatedHistoryComponent } from '../dialogs/dialog-patients-vaccinated-history/dialog-patients-vaccinated-history.component';
 import { DialogVaccineComponent } from '../dialogs/dialog-vaccine/dialog-vaccine.component';
 
@@ -32,9 +34,11 @@ export class VaccinesComponent implements OnInit {
 
   constructor(
     private vaccineService: VaccineService, 
+    private fullVaccineService: FullVaccineService,
     private formBuilder: FormBuilder,
     private notification: NotificationService,
-    private vaccineDialog: MatDialog) 
+    private vaccineDialog: MatDialog,
+    private fullVaccineDialog: MatDialog,) 
   {
     this.vaccineForm = this.formBuilder.group(
       {
@@ -72,7 +76,7 @@ export class VaccinesComponent implements OnInit {
   removeVaccine(id: number) {
     const _res = confirm('Desea eliminar?');
     if (_res) {
-      this.vaccineService.deleteVaccine(id).subscribe({
+      this.fullVaccineService.deleteFullVaccine(id).subscribe({
         next: (res) => {
           this.notification.notificationMessage(res.message);
           this.vaccines.pop();
@@ -89,8 +93,8 @@ export class VaccinesComponent implements OnInit {
       .open(DialogVaccineComponent, {
         width:'250px',
       })
-      .afterClosed().subscribe( _value => {
-        if (_value == 'save') {
+      .afterClosed().subscribe(value => {
+        if (value == 'save') {
           this.getVaccines();
         }
       });
@@ -101,8 +105,8 @@ export class VaccinesComponent implements OnInit {
         width:'250px',
         data: element,
       })
-      .afterClosed().subscribe( _value => {
-        if (_value == 'update') {
+      .afterClosed().subscribe(value => {
+        if (value == 'update') {
           this.getVaccines();
         }
       });
@@ -112,6 +116,13 @@ export class VaccinesComponent implements OnInit {
       .open(DialogPatientsVaccinatedHistoryComponent, {
         width:'350px',
         maxHeight: '400px',
+        data: element,
+      });
+  }
+  viewCompatibleVaccines(element: any) {
+    const dialogRef = this.fullVaccineDialog
+      .open(DialogCompatibleVaccinesComponent, {
+        width: '400px',
         data: element,
       });
   }

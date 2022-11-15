@@ -90,7 +90,7 @@ export class PatientCareComponent implements OnInit {
    * Method for obtaining the vaccines that were used in the patients and is used in the DOM "vaccines"
    */
   getVaccineListFromPatientCareList() {
-    if(localStorage.getItem('getPatientCares') && '{}') {
+    if (localStorage.getItem('getPatientCares') && '{}') {
       this.patientCares = JSON.parse(localStorage.getItem('getPatientCares') || '{}');
     }
     if (this.patientCares) {
@@ -101,7 +101,7 @@ export class PatientCareComponent implements OnInit {
     }    
   }
   getDoseListFromPatientCareList() {
-    if(localStorage.getItem('getPatientCares') && '{}') {
+    if (localStorage.getItem('getPatientCares') && '{}') {
       this.patientCares = JSON.parse(localStorage.getItem('getPatientCares') || '{}');
     }
     if (this.patientCares) {
@@ -173,8 +173,8 @@ export class PatientCareComponent implements OnInit {
       .open(DialogPatientCareComponent, {
         width:'250px',
       })
-      .afterClosed().subscribe(val => {
-        if(val == 'save') {
+      .afterClosed().subscribe(value => {
+        if(value == 'save') {
           this.getPatientCares();
         }
       });

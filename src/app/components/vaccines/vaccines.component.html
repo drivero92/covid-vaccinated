@@ -51,6 +51,11 @@
                 </button>
                 <button mat-icon-button 
                         class="btn btn-danger-mx-3" 
+                        (click)="viewCompatibleVaccines(element)">
+                    <mat-icon color="primary">info</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        class="btn btn-danger-mx-3" 
                         (click)="editVaccine(element)">
                         <!-- routerLink="/vaccines/{{element.id}}" [queryParams]="{queryMode: '0'}" -->
                     <mat-icon color="primary">edit</mat-icon>

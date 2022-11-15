@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { empty } from 'rxjs';
 import { FullVaccine } from 'src/app/models/full-vaccine';
 import { Vaccine } from 'src/app/models/vaccine';
 import { FullVaccineService } from 'src/app/services/full-vaccine.service';
+import { NotificationService } from 'src/app/services/notification.service';
+import { VaccineService } from 'src/app/services/vaccine.service';
 
 @Component({
   selector: 'app-dialog-compatible-vaccines',
@@ -13,10 +16,13 @@ export class DialogCompatibleVaccinesComponent implements OnInit {
 
   patientCareHeaderDetail: string[] = ["Vacuna", "Dosis completa"];
   vaccineList: Vaccine[] = [];
+  vaccineFlag: boolean = false;
   
   constructor(
     private fullVaccineService: FullVaccineService,
-    @Inject(MAT_DIALOG_DATA) public viewData: FullVaccine,
+    private vaccineService: VaccineService,
+    private notificationService: NotificationService,
+    @Inject(MAT_DIALOG_DATA) public viewData: Vaccine,//
     private dialogRef: MatDialogRef<DialogCompatibleVaccinesComponent>,) { }
 
   ngOnInit(): void {
@@ -25,6 +31,18 @@ export class DialogCompatibleVaccinesComponent implements OnInit {
 
   getCompatibleVaccineList() {
     this.fullVaccineService.getVaccineList(this.viewData.id)
-      .subscribe(vaccines => this.vaccineList = vaccines);
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            this.vaccineFlag = true;
+          } else {
+            this.vaccineFlag = false;
+          }
+          this.vaccineList = res;        
+        }, 
+        error: (err) => {
+          this.notificationService.notificationMessage(err, true);
+        },
+      });
   }
 }

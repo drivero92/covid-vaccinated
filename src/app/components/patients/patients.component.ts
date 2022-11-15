@@ -104,8 +104,8 @@ export class PatientsComponent implements OnInit {
       .open(DialogPatientComponent, {
         width:'250px',
       })
-      .afterClosed().subscribe(val => {
-        if(val == 'save') {
+      .afterClosed().subscribe(value => {
+        if(value == 'save') {
           this.getPatients();
         }
       });
@@ -116,8 +116,8 @@ export class PatientsComponent implements OnInit {
         width:'250px',
         data: element,
       })
-      .afterClosed().subscribe(val => {
-        if(val == 'update') {
+      .afterClosed().subscribe(value => {
+        if(value == 'update') {
           this.getPatients();
         }
       });

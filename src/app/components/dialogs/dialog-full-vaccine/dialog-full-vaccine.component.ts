@@ -15,9 +15,19 @@ export class DialogFullVaccineComponent implements OnInit {
   actionBtn: string = "Guardar";
   vaccineList: Vaccine[] = [];
   fullVaccineForm: FormGroup = this.formBuilder.group({
-    vaccine: [''],
+   
     vaccines: new FormArray([]),
+    // vaccines: new FormArray([
+    //   new FormGroup({
+    //     id: new FormControl(false),
+    //   })
+    // ]),
+    // vaccines: this.formBuilder.array([{id: new FormControl()}]),
+    // vaccines: this.formBuilder.array([
+    //   {id: new FormControl(),}
+    // ])
   });
+
   
   constructor(
     private fullVaccineService: FullVaccineService,
@@ -37,15 +47,33 @@ export class DialogFullVaccineComponent implements OnInit {
       }
     });
   }
-  private addCheckboxes() {
-    this.vaccineList.forEach(() => this.vaccinesFormArray.push(new FormControl(false)));
+  newVaccineC(): FormGroup {
+    return this.formBuilder.group({
+      id: [''],
+    });
   }
-  get vaccinesFormArray() {
+  private addCheckboxes() {
+    id: new FormControl();
+    this.vaccineList.forEach(() => this.vaccinesFormArray.push(new FormControl(false)));// id: new FormControl()  this.newVaccineC()
+  }
+  get vaccinesFormArray(): FormArray {
     return this.fullVaccineForm.controls['vaccines'] as FormArray;
   }
 
-  // saveModal() {
-  //   this.fullVaccineService.addFullVaccine().subscribe({
-  //   });
-  // }
+  submit() {
+    const selectedOrderIds = this.fullVaccineForm.value.vaccines
+      .map((checked: any, i: any) => checked ? this.vaccineList[i].id : null)
+      .filter((v: any) => v !== null);
+    
+      // let is: number[]=[];
+    // console.log(selectedOrderIds);
+    // selectedOrderIds.forEach((v:any) => {console.log(v);is.push(v)});
+    // console.log("is: ", is.map(v => v));
+    // this.fullVaccineForm.controls['compatibleVaccines'].setValue({id: selectedOrderIds.value});
+    const _vaccine = this.fullVaccineForm.value;
+    console.log("_vaccine ",_vaccine);
+    console.log("selectedOrderIds ", selectedOrderIds);
+    // this.fullVaccineService.addFullVaccine().subscribe({
+    // });
+  }
 }

@@ -20,25 +20,25 @@ export class PatientService {
   }
 
   getPatient(id: number): Observable<Patient> {
-    const url = `${this.urlPatients}/get/${id}`;
+    const url = `${this.urlPatients}/${id}`;
     return this.http.get<Patient>(url)
       .pipe(catchError(this.handleError));
   }
 
   addPatient(patient: Patient): Observable<Patient> {
-    const url = `${this.urlPatients}/save`;
+    const url = `${this.urlPatients}`;
     return this.http.post<Patient>(url, patient)
       .pipe(catchError(this.handleError));
   }
 
   updatePatient(patient: Patient): Observable<Patient> {
-    const url = `${this.urlPatients}/update`;
+    const url = `${this.urlPatients}`;
     return this.http.put<Patient>(url, patient)
       .pipe(catchError(this.handleError));
   }
 
   deletePatient(id: number): Observable<any> {
-    const url = `${this.urlPatients}/delete/${id}`;
+    const url = `${this.urlPatients}/${id}`;
     return this.http.delete<any>(url)
       .pipe(catchError(this.handleError));
   }

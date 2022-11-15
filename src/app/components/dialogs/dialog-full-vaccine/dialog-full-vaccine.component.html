@@ -1,8 +1,8 @@
 <!-- (ngSubmit)="submit()" -->
-<form [formGroup]="fullVaccineForm">
-    <div>
+<form [formGroup]="fullVaccineForm" (ngSubmit)="submit()">
+    <!-- <div>
         <mat-form-field appearance="legacy">
-            <input type="text" matInput placeholder="Nombre" formControlName="name">
+            <input type="text" matInput placeholder="Nombre" formControlName="vaccine.name">
         </mat-form-field>
     </div>
     <div>
@@ -19,14 +19,34 @@
         <mat-form-field appearance="legacy">
             <input matInput placeholder="Dosis completa" formControlName="numberDoses">
         </mat-form-field>
+    </div> -->
+
+    <div formArrayName="vaccines" >
+        <label *ngFor="let vaccine of vaccinesFormArray.controls; let i = index">
+            <div >
+                <input type="checkbox" [formControlName]="i">
+                {{vaccineList[i].name}}
+                <br>
+            </div>
+        </label>
+        <br>
     </div>
-    <div>
-        <label formArrayName="vaccines" *ngFor="let order of vaccinesFormArray.controls; let i = index">
+    <!-- <div *ngFor="let vacciness of fullVaccineForm.controls['vaccines'].get('vaccines'); let i = index">
+        <label formArrayName="vaccines" >
             <input type="checkbox" [formControlName]="i">
             {{vaccineList[i].name}}
             <br>
         </label>
         <br>
-    </div>
+    </div> -->
+    <!-- <div [formGroup]="fullVaccineForm">
+        <ng-container formArrayName="vaccines">
+            <ng-container *ngFor="let lala of vaccinesFormArray.controls; let i = index">
+                <div >
+                    <input matInput placeholder="id" type="text" formControlName="id">
+                </div>
+            </ng-container>
+        </ng-container>
+    </div> -->
     <button mat-raised-button color="primary">{{actionBtn}}</button>
 </form>

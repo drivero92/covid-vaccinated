@@ -19,43 +19,43 @@ export class PatientCareService {
   }
 
   getPatientCareListByPatientId(id: number): Observable<PatientCare[]> {
-    const url = `${this.urlPatientCare}/list_patient_care/${id}`;
+    const url = `${this.urlPatientCare}/${id}`;
     return this.http.get<PatientCare[]>(url)
       .pipe(catchError(this.handleError));
   }
 
   getLastPatientCareByPatientId(id: number): Observable<PatientCare> {
-    const url = `${this.urlPatientCare}/get/last_patient_care_byPatientId/${id}`;
+    const url = `${this.urlPatientCare}/${id}/last_patient_care`;
     return this.http.get<PatientCare>(url)
       .pipe(catchError(this.handleError));
   }
 
   getPatientCareListByVaccineId(id: number): Observable<PatientCare[]> {
-    const url = `${this.urlPatientCare}/list_vaccines_patient_care/${id}`;
+    const url = `${this.urlPatientCare}/${id}/list_vaccines`;
     return this.http.get<PatientCare[]>(url)
       .pipe(catchError(this.handleError));
   }
 
   getPatientCareListByDose(dose: number): Observable<PatientCare[]> {
-    const url = `${this.urlPatientCare}/list_vaccines_patient_care_byDose/${dose}`;
+    const url = `${this.urlPatientCare}/${dose}/list_vaccines_dose`;
     return this.http.get<PatientCare[]>(url)
       .pipe(catchError(this.handleError));
   }
 
   addPatientCare(patientCare: any): Observable<PatientCare> {
-    const url = `${this.urlPatientCare}/save`;
+    const url = `${this.urlPatientCare}`;
     return this.http.post<PatientCare>(url, patientCare)
       .pipe(catchError(this.handleError));
   }
 
   updatePatientCare(patientCare: any): Observable<PatientCare> {
-    const url = `${this.urlPatientCare}/update`;
+    const url = `${this.urlPatientCare}`;
     return this.http.put<PatientCare>(url, patientCare)
       .pipe(catchError(this.handleError));
   }
 
   deletePatientCare(id: number): Observable<any> {
-    const url = `${this.urlPatientCare}/delete/${id}`;
+    const url = `${this.urlPatientCare}/${id}`;
     return this.http.delete<any>(url)
       .pipe(catchError(this.handleError));
   }

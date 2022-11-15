@@ -32,14 +32,14 @@ export class DialogVaccinationHistoryComponent implements OnInit {
 
   getPatientCare() {
     this.patientCareService.getPatientCareListByPatientId(this.viewData.id).subscribe({
-        next: (value) => {
-          if (value) {
+        next: (res) => {
+          if (res) {
             this.vaccineFlag = true;
           } else {
             this.vaccineFlag = false;
           }
-          this.patientCareList = value;
-          // this.dataSource = new MatTableDataSource(value);          
+          this.patientCareList = res;
+          // this.dataSource = new MatTableDataSource(res);          
         }, 
         error: (err) => {
           this.notificationService.notificationMessage(err, true);

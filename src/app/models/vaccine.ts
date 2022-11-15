@@ -4,4 +4,5 @@ export interface Vaccine {
     quantity: number,
     restDays: number,
     numberDoses: number,
+    vaccines: Array<Vaccine>,
 }

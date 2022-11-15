@@ -21,20 +21,21 @@
                 <input matInput placeholder="Dosis completa" formControlName="numberDoses">
             </mat-form-field>
         </div>
-        <!-- <div>
-            <mat-form-field appearance="legacy">
-                <ng-container  *ngFor="let vaccine of vaccines">
-                    <input type="checkbox"> {{vaccine.name}}
-                </ng-container>
-            </mat-form-field>
-            <label formArrayName="orders" *ngFor="let order of ordersFormArray.controls; let i = index">
-                <input type="checkbox" [formControlName]="i">
-                {{ordersData[i].name}}
-            </label>
-        </div> -->
         <div>
-            <button type="submit" [disabled]="vaccineDialogForm.invalid" class="btn btn-danger" mat-raised-button
-                color="primary" (click)="saveVaccineModal()">{{actionBtn}}</button>
+            <label formArrayName="compatibleVaccines" *ngFor="let vaccine of vaccinesFormArray.controls; let i = index">
+                <input type="checkbox" [formControlName]="i">
+                {{vaccines[i].name}}
+                <br>
+            </label>
+            <br>
+        </div>
+        <div>
+            
+            <button type="submit" 
+                    [disabled]="vaccineDialogForm.invalid"
+                    class="btn btn-danger" 
+                    mat-raised-button
+                    color="primary" (click)="saveVaccineModal()">{{actionBtn}}</button>
         </div>
     </form>
 </div>

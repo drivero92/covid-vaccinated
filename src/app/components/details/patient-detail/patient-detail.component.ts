@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Patient } from 'src/app/models/patient';
-import { PatientService } from 'src/app/services/patient.service';
+import { PatientService } from 'src/app/patients/services/patient.service';
 import { Location } from '@angular/common';
 import { PatientCare } from 'src/app/models/patient-care';
-import { PatientCareService } from 'src/app/services/patient-care.service';
+import { PatientCareService } from 'src/app/patient-care/services/patient-care.service';
 
 @Component({
   selector: 'app-patient-detail',

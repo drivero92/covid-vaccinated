@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { PatientsComponent } from './components/patients/patients.component'; 
-import { VaccinesComponent } from './components/vaccines/vaccines.component'; 
-import { PatientCareComponent } from './components/patient-care/patient-care.component'; 
+import { PatientsComponent } from './patients/components/patients/patients.component'; 
+import { VaccinesComponent } from './vaccines/components/vaccines/vaccines.component'; 
+import { PatientCareComponent } from './patient-care/components/patient-care/patient-care.component'; 
 import { PatientDetailComponent } from './components/details/patient-detail/patient-detail.component'; 
 import { PatientCareDetailComponent } from './components/details/patient-care-detail/patient-care-detail.component';
 import { VaccineDetailComponent } from './components/details/vaccine-detail/vaccine-detail.component';
 import { LoginComponent } from './components/login/login.component';
-import { FullVaccineComponent } from './components/full-vaccine/full-vaccine.component';
+import { FullVaccineComponent } from './vaccines/components/full-vaccine/full-vaccine.component';
 
 const routes: Routes = [
   //pathMatch: 'full or prefix' is:

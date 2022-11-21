@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Vaccine } from 'src/app/models/vaccine';
-import { FullVaccineService } from 'src/app/services/full-vaccine.service';
-import { VaccineService } from 'src/app/services/vaccine.service';
+import { FullVaccineService } from 'src/app/vaccines/services/full-vaccine.service';
+import { VaccineService } from 'src/app/vaccines/services/vaccine.service';
 
 @Component({
   selector: 'app-dialog-full-vaccine',

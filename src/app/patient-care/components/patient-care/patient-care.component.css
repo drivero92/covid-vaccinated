@@ -1,0 +1,62 @@
+.action-info-section {
+  display: grid; 
+  margin-bottom: 40px; 
+  height: 100px;
+}
+
+.action {
+  position: absolute; 
+  right: 50px; 
+}
+
+section {
+    display: table;
+  }
+  
+  .example-label {
+    display: table-cell;
+    font-size: 14px;
+    margin-left: 8px;
+    min-width: 120px;
+  }
+  
+  .example-button-row {
+    display: table-cell;
+    width: 490px;
+  }
+  
+  .example-button-row .mat-button-base {
+    margin: 8px 8px 8px 0;
+  }
+  
+  .example-flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+  }
+
+  td.mat-cell, th.mat-header-cell {
+    text-align: center;
+    justify-content:center;
+  }
+
+  ::ng-deep .warning{
+    background: 'yellow';
+ }
+
+ .table-container {
+   max-width: 1000px;
+   margin: auto;
+ }
+
+ .table {
+   width: 100%; 
+   height: 200px; 
+   margin: auto;
+ }

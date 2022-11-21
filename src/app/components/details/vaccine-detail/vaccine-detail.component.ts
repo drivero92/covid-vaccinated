@@ -4,8 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { PatientCare } from 'src/app/models/patient-care';
 import { Vaccine } from 'src/app/models/vaccine';
-import { PatientCareService } from 'src/app/services/patient-care.service';
-import { VaccineService } from 'src/app/services/vaccine.service';
+import { PatientCareService } from 'src/app/patient-care/services/patient-care.service';
+import { VaccineService } from 'src/app/vaccines/services/vaccine.service';
 
 @Component({
   selector: 'app-vaccine-detail',
